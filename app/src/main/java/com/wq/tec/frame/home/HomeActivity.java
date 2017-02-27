@@ -63,7 +63,7 @@ public class HomeActivity extends WQActivity {
 
         @Override
         protected void configChildView(ImageView view, int position) {
-            ImageView img = (ImageView) view;
+            ImageView img = view;
             ImageManager.get().displayImage(this.url.get(position), img);
         }
     }
