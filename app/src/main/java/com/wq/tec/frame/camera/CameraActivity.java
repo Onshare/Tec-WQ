@@ -12,7 +12,7 @@ import com.wq.tec.WQActivity;
 public class CameraActivity extends WQActivity {
 
     @Override
-    protected boolean isNeedCheckPermission() {
+    protected boolean isSupportCheckPermission() {
         return true;
     }
 
