@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/home_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionbar_height"
+        android:background="#4d4d4d">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:singleLine="true"
+            android:text="极限智拍"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/home_pay"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="17dp"
+            android:background="@mipmap/home_pay" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/home_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:background="#4d4d4d">
+
+        <FrameLayout
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:background="@android:color/white"
+            android:padding="2dp">
+
+            <ImageView
+                android:id="@+id/home_show"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#4d4d4d"
+                android:scaleType="center" />
+        </FrameLayout>
+
+        <View
+            android:id="@+id/home_camera"
+            android:layout_width="79dp"
+            android:layout_height="79dp"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/home_camera" />
+
+        <LinearLayout
+            android:id="@+id/home_play"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="50dp"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@mipmap/home_play" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:singleLine="true"
+                android:text="极限智拍"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/home_top"
+        android:layout_above="@+id/home_bottom"
+        android:padding="17dp"
+        android:clipChildren="false"
+        android:background="@android:color/white">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/home_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"/>
+    </RelativeLayout>
+</RelativeLayout>
