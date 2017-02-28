@@ -96,7 +96,6 @@ public class HomeActivity extends WQActivity {
                 if(mCursor != null ){
                     List<String> mediaPath = new ArrayList<>();
                     while (mCursor.moveToNext()) {
-//                        long id = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Images.Media._ID));
                         String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
                         if (path != null && path.contains(sdcardPath + "/DCIM/")) {
                             mediaPath.add(path);
