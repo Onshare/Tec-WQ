@@ -93,15 +93,12 @@
         android:layout_below="@+id/home_top"
         android:layout_above="@+id/home_bottom"
         android:padding="17dp"
-        android:clipChildren="false"
         android:background="@android:color/white">
 
-        <android.support.v4.view.ViewPager
+        <com.wq.tec.open.gallery.FancyCoverFlow
             android:id="@+id/home_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"/>
+            android:spacing="12dp"/>
     </RelativeLayout>
 </RelativeLayout>

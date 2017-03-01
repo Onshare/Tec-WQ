@@ -51,5 +51,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':BaseLibs')
     compile(name: 'gpu_image_sdk', ext: 'aar')
-    compile(name:'OpenCV-sdk', ext:'aar')
+    compile(name: 'OpenCV-sdk', ext: 'aar')
+    compile files('libs/Baidu_Mtj_3.7.5.5.jar')
 }

@@ -5,15 +5,18 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jazz.libs.ImageLoader.ImageManager;
-import com.jazz.libs.adapter.BasePagerAdapter;
 import com.jazz.libs.util.ThreadUtils;
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
+import com.wq.tec.open.gallery.FancyCoverFlow;
+import com.wq.tec.open.gallery.FancyCoverFlowAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +29,7 @@ public class HomeActivity extends WQActivity {
 
     View mHomePay, mHomeCamera, mHomePlay;
     ImageView mHomeShow;
-    android.support.v4.view.ViewPager mHomePager;
+    com.wq.tec.open.gallery.FancyCoverFlow mHomePager;
 
     @Override
     protected boolean isSupportCheckPermission() {
@@ -40,10 +43,15 @@ public class HomeActivity extends WQActivity {
         mHomeCamera = findViewById(R.id.home_camera);
         mHomePlay = findViewById(R.id.home_play);
         mHomeShow = (ImageView) findViewById(R.id.home_show);
-        mHomePager = (android.support.v4.view.ViewPager) findViewById(R.id.home_pager);
-        mHomePager.setOffscreenPageLimit(3);
+        mHomePager = (com.wq.tec.open.gallery.FancyCoverFlow) findViewById(R.id.home_pager);
         mHomePager.setAdapter(new HomeAdapter(this, getPagerShowImage()));
-        mHomePager.setCurrentItem(1);
+        this.mHomePager.setUnselectedAlpha(1.0f);
+        this.mHomePager.setUnselectedSaturation(0.0f);
+        this.mHomePager.setUnselectedScale(0.5f);
+        this.mHomePager.setSpacing(50);
+        this.mHomePager.setMaxRotation(0);
+        this.mHomePager.setScaleDownGravity(0.2f);
+        this.mHomePager.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
     }
 
     List<String> getPagerShowImage(){
@@ -55,25 +63,40 @@ public class HomeActivity extends WQActivity {
         return homeList;
     }
 
-    class HomeAdapter extends BasePagerAdapter<ImageView> {
+    class HomeAdapter extends FancyCoverFlowAdapter{
 
-        List<String> url = new ArrayList<>();
+        private List<String> data;
+        private LayoutInflater mInflater;
 
-        public HomeAdapter(Context context, List<String> data) {
-            super(context);
-            for(String d : data){
-                ImageView imgView = new ImageView(context);
-                imgView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                this.data.add(imgView);
-            }
-            this.url.addAll(data);
+        public HomeAdapter(@NonNull Context ctx, List<String> data) {
+            this.data = new ArrayList<>(data);
+            mInflater = LayoutInflater.from(ctx);
         }
 
+        @Override
+        public int getCount() {
+            return this.data.size();
+        }
 
         @Override
-        protected void configChildView(ImageView view, int position) {
-            ImageView img = view;
-            ImageManager.get().displayImage(this.url.get(position), img);
+        public String getItem(int position) {
+            return this.data.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getCoverFlowItem(int position, View reusableView, ViewGroup parent) {
+            if(reusableView == null){
+                reusableView = mInflater.inflate(R.layout.item_home, null);
+            }
+            ImageView mHomeImage = (ImageView) reusableView.findViewById(R.id.home_img);
+            ImageManager.get().displayImage(this.data.get(position), mHomeImage);
+
+            return reusableView;
         }
     }
 
