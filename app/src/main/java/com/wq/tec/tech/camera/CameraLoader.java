@@ -56,18 +56,22 @@ public class CameraLoader {
         mCameraHelper.takePicture(new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
-                Bitmap result = BitmapFactory.decodeByteArray(data, 0, data.length);
-                if(CameraLoader.this.mFilter != null){
-                    if(CameraLoader.this.mView != null){
-                        CameraLoader.this.mView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+                try {
+                    Bitmap result = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    if(CameraLoader.this.mFilter != null){
+                        if(CameraLoader.this.mView != null){
+                            CameraLoader.this.mView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+                        }
+                        result = gpu.getBitmapWithFilterApplied(result);
                     }
-                    result = gpu.getBitmapWithFilterApplied(result);
+                    if(takePicCallBack != null){
+                        takePicCallBack.takePic(result);
+                    }
+                    stopCamera();
+                    mFrame.showResult(result);
+                } catch (Exception e) {
+                    System.gc();
                 }
-                if(takePicCallBack != null){
-                    takePicCallBack.takePic(result);
-                }
-                stopCamera();
-                mFrame.showResult(result);
             }
         });
     }

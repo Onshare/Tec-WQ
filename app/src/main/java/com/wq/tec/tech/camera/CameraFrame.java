@@ -76,7 +76,6 @@ public class CameraFrame extends BaseFragment{
         super.onResume();
         mLoader.onResume();
         CameraController.setCameraLoader(mLoader);
-        mLoader.setFilter(new jp.co.cyberagent.android.gpuimage.GPUImageSepiaFilter());
     }
 
     @Override

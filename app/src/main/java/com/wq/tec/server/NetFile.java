@@ -12,11 +12,11 @@ public class NetFile extends UrlSwtich{
 
     @Override
     public String getUrlHost() {
-        return null;
+        return "";
     }
 
     @Override
     public void registUrlPath(Map<String, String> urlDevice) {
-
+        urlDevice.put(ServerConstant.URL_SERVER_METHOD_GUID_PICS, "http://www.kkping.com/PCAPI/getGuidePic");
     }
 }

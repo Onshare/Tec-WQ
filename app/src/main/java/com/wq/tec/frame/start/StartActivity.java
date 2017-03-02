@@ -26,6 +26,7 @@ public class StartActivity extends WQActivity implements Handler.Callback{
     @Override
     public boolean handleMessage(Message msg) {
         startActivity(new Intent(this, HomeActivity.class));
+        this.finish();
         return true;
     }
 

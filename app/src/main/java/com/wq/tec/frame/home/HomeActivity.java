@@ -1,6 +1,7 @@
 package com.wq.tec.frame.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jazz.libs.ImageLoader.ImageManager;
+import com.jazz.libs.util.DensityUtils;
 import com.jazz.libs.util.ThreadUtils;
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
+import com.wq.tec.frame.guid.GuidActivity;
 import com.wq.tec.open.gallery.FancyCoverFlow;
 import com.wq.tec.open.gallery.FancyCoverFlowAdapter;
 
@@ -25,7 +28,7 @@ import java.util.List;
  * Created by NoName on 2017/2/22.
  */
 
-public class HomeActivity extends WQActivity {
+public class HomeActivity extends WQActivity implements View.OnClickListener{
 
     View mHomePay, mHomeCamera, mHomePlay;
     ImageView mHomeShow;
@@ -37,7 +40,7 @@ public class HomeActivity extends WQActivity {
     }
 
     @Override
-    protected void onCreateActivity(Bundle savedInstanceState) {
+    protected void onCreateActivity(Bundle savedInstanceState) {//
         setContentView(R.layout.activity_home);
         mHomePlay = findViewById(R.id.home_pay);
         mHomeCamera = findViewById(R.id.home_camera);
@@ -45,13 +48,7 @@ public class HomeActivity extends WQActivity {
         mHomeShow = (ImageView) findViewById(R.id.home_show);
         mHomePager = (com.wq.tec.open.gallery.FancyCoverFlow) findViewById(R.id.home_pager);
         mHomePager.setAdapter(new HomeAdapter(this, getPagerShowImage()));
-        this.mHomePager.setUnselectedAlpha(1.0f);
-        this.mHomePager.setUnselectedSaturation(0.0f);
-        this.mHomePager.setUnselectedScale(0.5f);
-        this.mHomePager.setSpacing(50);
-        this.mHomePager.setMaxRotation(0);
-        this.mHomePager.setScaleDownGravity(0.2f);
-        this.mHomePager.setActionDistance(FancyCoverFlow.ACTION_DISTANCE_AUTO);
+        mHomePlay.setOnClickListener(this);
     }
 
     List<String> getPagerShowImage(){
@@ -63,14 +60,26 @@ public class HomeActivity extends WQActivity {
         return homeList;
     }
 
+    @Override
+    public void onClick(View v) {
+        int resId = v.getId();
+        if(R.id.home_play == resId){
+            startActivity(new Intent(this, GuidActivity.class));
+        }
+    }
+
     class HomeAdapter extends FancyCoverFlowAdapter{
 
         private List<String> data;
         private LayoutInflater mInflater;
+        private int[] imgSize = new int[2];
+        private int[] resource = new int[]{R.mipmap.home_1, R.mipmap.home_2, R.mipmap.home_3, R.mipmap.home_4};
 
         public HomeAdapter(@NonNull Context ctx, List<String> data) {
             this.data = new ArrayList<>(data);
             mInflater = LayoutInflater.from(ctx);
+            imgSize[0] = (ctx.getResources().getDisplayMetrics().widthPixels - DensityUtils.dp2px(ctx, 17) * 2) * 2 / 3;
+            imgSize[1] = imgSize[0] * 1136 / 639;
         }
 
         @Override
@@ -94,8 +103,8 @@ public class HomeActivity extends WQActivity {
                 reusableView = mInflater.inflate(R.layout.item_home, null);
             }
             ImageView mHomeImage = (ImageView) reusableView.findViewById(R.id.home_img);
-            ImageManager.get().displayImage(this.data.get(position), mHomeImage);
-
+            mHomeImage.setImageResource(resource[position]);
+            reusableView.setLayoutParams(new FancyCoverFlow.LayoutParams(imgSize[0], imgSize[1]));
             return reusableView;
         }
     }
@@ -104,6 +113,7 @@ public class HomeActivity extends WQActivity {
     protected void onResume() {
         super.onResume();
         mCursorLoadPic();
+        mHomePager.setSelection(1);
     }
 
     private void mCursorLoadPic(){
