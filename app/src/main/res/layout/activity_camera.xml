@@ -2,8 +2,141 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <FrameLayout
         android:id="@+id/camera_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/camera_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="97.5dp"
+        android:layout_marginRight="15dp"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/camera_conver_mode"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/camera_cover_control"
+            android:onClick="doCover"
+            android:text="原图"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/camera_cover_close"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/camera_cover_control"
+            android:onClick="doCover"
+            android:text="关闭极限模式"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="97.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="#4d4d4d">
+
+        <FrameLayout
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:background="@android:color/white"
+            android:padding="2dp">
+
+            <ImageView
+                android:id="@+id/camera_show"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#4d4d4d"
+                android:scaleType="centerCrop" />
+        </FrameLayout>
+
+        <View
+            android:id="@+id/camera_take"
+            android:layout_width="79dp"
+            android:layout_height="79dp"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/app_camera"
+            android:onClick="doTackePic" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/camera_take"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/camera_filter"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:background="@mipmap/camera_filter"
+                android:onClick="doControl" />
+
+            <View
+                android:id="@+id/camera_guid"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:background="@mipmap/camera_guid"
+                android:onClick="doControl" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="#AF000000"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <View
+            android:id="@+id/cameraback"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/camera_close"
+            android:onClick="doAction" />
+
+        <View
+            android:id="@+id/cameraswitch"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/camera_switch"
+            android:onClick="doAction" />
+
+        <View
+            android:id="@+id/cameralight"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="22.5dp"
+            android:layout_toLeftOf="@+id/cameraswitch"
+            android:background="@drawable/camera_light"
+            android:onClick="doAction" />
+    </RelativeLayout>
+
 </RelativeLayout>

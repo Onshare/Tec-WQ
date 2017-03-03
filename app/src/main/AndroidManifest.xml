@@ -56,8 +56,8 @@
         </activity>
         <activity android:name=".frame.home.HomeActivity" android:screenOrientation="portrait"/>
         <activity android:name=".frame.guid.GuidActivity" android:screenOrientation="portrait"/>
-
-        <activity android:name=".frame.camera.CameraActivity"/>
+        <activity android:name=".frame.web.WebAcitivity" android:screenOrientation="portrait"/>
+        <activity android:name=".frame.camera.CameraActivity" android:screenOrientation="portrait"/>
 
     </application>
 

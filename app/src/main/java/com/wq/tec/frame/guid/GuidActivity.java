@@ -2,6 +2,7 @@ package com.wq.tec.frame.guid;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -22,6 +23,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
+import com.wq.tec.frame.camera.CameraActivity;
 import com.wq.tec.open.gallery.FancyCoverFlow;
 import com.wq.tec.open.gallery.FancyCoverFlowAdapter;
 import com.wq.tec.tech.camera.CameraFrame;
@@ -58,9 +60,16 @@ public class GuidActivity extends WQActivity<GuidPresenter> implements AdapterVi
             case R.id.actionback:
                 finish();
                 break;
-            case R.id.actiontitle:
-                break;
             case R.id.actionsure:
+                GuidRecord record = (GuidRecord) mPager.getSelectedItem();
+                Intent mIntent = new Intent(this, CameraActivity.class);
+                if(record != null){
+                    mIntent.putExtra("URL_CLIP", record.clip_url);
+                    mIntent.putExtra("URL_ORIGIN", record.origin_url);
+                    mIntent.putExtra("URL_BACKGROUND", record.background_url);
+                }
+                startActivity(mIntent);
+                this.finish();
                 break;
         }
     }
@@ -103,10 +112,9 @@ public class GuidActivity extends WQActivity<GuidPresenter> implements AdapterVi
         if(parent == mPager){
             log(position);
             GuidRecord record = ((GuidPagerAdapter)mPager.getAdapter()).getItem(position);
-            String mFileName = getUrlDecode(record.clip_url);
+            String mFileName = getUrlDecode(record.clip_url) + ".png";
             if(FileCacheUtil.checkExist(mFileName)){
                 ImageManager.get().displayImage("file://"+FileCacheUtil.getCachePath()+mFileName, mCameraCover);
-                log("file://"+FileCacheUtil.getCachePath()+mFileName);
             }else{
                 mCameraCover.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
@@ -156,7 +164,7 @@ public class GuidActivity extends WQActivity<GuidPresenter> implements AdapterVi
             ImageManager.get().displayImage(data.get(position).thumb_url, mImage, mOptions);
 
             final RelativeLayout loadOwner = (RelativeLayout) reusableView.findViewById(R.id.guid_download);
-            String urlPath = getUrlDecode(data.get(position).clip_url);
+            String urlPath = getUrlDecode(data.get(position).clip_url)+".png";
             if(FileCacheUtil.checkExist(urlPath)){
                 loadOwner.setVisibility(View.GONE);
             }else{
@@ -187,7 +195,7 @@ public class GuidActivity extends WQActivity<GuidPresenter> implements AdapterVi
                 loadOwner.setVisibility(View.GONE);
                 anim.cancel();
                 if(bitmap != null){
-                    BitmapUtil.saveToFile(bitmap, FileCacheUtil.getCachePath() + getUrlDecode(mUrlPath)+".png");
+                    BitmapUtil.saveToFile(bitmap, FileCacheUtil.getCachePath() + getUrlDecode(mUrlPath)+".png");//
                 }
             }
 
@@ -210,6 +218,6 @@ public class GuidActivity extends WQActivity<GuidPresenter> implements AdapterVi
     }
 
     private String getUrlDecode(String urlPath){
-        return DataUtil.getBase64(urlPath.getBytes()).replace("/", "").replace("\\", "");
+        return DataUtil.getBase64(urlPath.getBytes()).trim().replace("/", "").replace("\\", "");
     }
 }

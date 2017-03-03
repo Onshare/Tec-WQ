@@ -67,6 +67,7 @@ public class CameraFrame extends BaseFragment{
         mLoader.relativeGL(mSurface);
         mFrame.addView(mFocusView = getFocusView(getContext()));
         mFrame.addView(mShowResultView = new ImageView(getContext()), new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        mShowResultView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mFocusView.setVisibility(View.GONE);
         this.mShowResultView.setVisibility(View.GONE);
     }

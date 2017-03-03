@@ -153,4 +153,13 @@ public class CameraHelper {
         mCamera.setParameters(mParameters);
         mCamera.takePicture(null, null, jpegCallBack);
     }
+
+    void takeFlash(boolean isOpen){
+        try {
+            Camera.Parameters mParameters = mCamera.getParameters();
+            mParameters.setFlashMode(isOpen ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
+            mCamera.setParameters(mParameters);
+        } catch (Exception e) {
+        }
+    }
 }

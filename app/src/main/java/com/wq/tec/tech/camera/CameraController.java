@@ -56,4 +56,10 @@ public final class CameraController {
             CameraController.mLoader.autoFocus();
         }
     }
+
+    public static void openFlash(boolean isOpen){
+        if(CameraController.mLoader != null){
+            CameraController.mLoader.takeFlash(isOpen);
+        }
+    }
 }

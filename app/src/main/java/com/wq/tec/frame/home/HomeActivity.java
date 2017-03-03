@@ -13,13 +13,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jazz.libs.ImageLoader.ImageManager;
+import com.jazz.libs.termination.TerminationTask;
 import com.jazz.libs.util.DensityUtils;
 import com.jazz.libs.util.ThreadUtils;
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
+import com.wq.tec.frame.camera.CameraActivity;
 import com.wq.tec.frame.guid.GuidActivity;
+import com.wq.tec.frame.web.WebAcitivity;
 import com.wq.tec.open.gallery.FancyCoverFlow;
 import com.wq.tec.open.gallery.FancyCoverFlowAdapter;
+import com.wq.tec.util.FileCacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +46,15 @@ public class HomeActivity extends WQActivity implements View.OnClickListener{
     @Override
     protected void onCreateActivity(Bundle savedInstanceState) {//
         setContentView(R.layout.activity_home);
-        mHomePlay = findViewById(R.id.home_pay);
+        mHomePay = findViewById(R.id.home_pay);
         mHomeCamera = findViewById(R.id.home_camera);
         mHomePlay = findViewById(R.id.home_play);
         mHomeShow = (ImageView) findViewById(R.id.home_show);
         mHomePager = (com.wq.tec.open.gallery.FancyCoverFlow) findViewById(R.id.home_pager);
         mHomePager.setAdapter(new HomeAdapter(this, getPagerShowImage()));
         mHomePlay.setOnClickListener(this);
+        mHomeCamera.setOnClickListener(this);
+        mHomePay.setOnClickListener(this);
     }
 
     List<String> getPagerShowImage(){
@@ -65,6 +71,12 @@ public class HomeActivity extends WQActivity implements View.OnClickListener{
         int resId = v.getId();
         if(R.id.home_play == resId){
             startActivity(new Intent(this, GuidActivity.class));
+        }else if(R.id.home_camera == resId){
+            startActivity(new Intent(this, CameraActivity.class));
+        }else if(R.id.home_pay == resId){
+            Intent mIntent = new Intent(this, WebAcitivity.class);
+            mIntent.putExtra("webUrl", "https://www.tmall.com/");
+            startActivity(mIntent);
         }
     }
 
@@ -117,29 +129,14 @@ public class HomeActivity extends WQActivity implements View.OnClickListener{
     }
 
     private void mCursorLoadPic(){
-        ThreadUtils.execute(new Runnable() {
+        FileCacheUtil.mCursorPhotoAtFirst(this, new TerminationTask<String>() {
             @Override
-            public void run() {
-                String sdcardPath = Environment.getExternalStorageDirectory().getPath();
-                Cursor mCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA},
-                        MediaStore.Images.Media.MIME_TYPE + "=? OR " + MediaStore.Images.Media.MIME_TYPE + "=?",
-                        new String[] { "image/jpeg", "image/png" }, MediaStore.Images.Media._ID + " DESC"); // 按图片ID降序排列
-
-                if(mCursor != null ){
-                    List<String> mediaPath = new ArrayList<>();
-                    while (mCursor.moveToNext()) {
-                        String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                        if (path != null && path.contains(sdcardPath + "/DCIM/")) {
-                            mediaPath.add(path);
-                        }
-                    }
-                    mCursor.close();
-                    if(mediaPath.size() > 0){
-                        showMediaImageIcon(mediaPath.get(0));
-                    }
-                }
+            public void onTermination(String tag, String object) {
+                showMediaImageIcon(object);
             }
+
+            @Override
+            public void onTerminationfailure(String tag, byte[] content, Throwable e) {}
         });
     }
 

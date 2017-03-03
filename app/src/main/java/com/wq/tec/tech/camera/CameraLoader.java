@@ -86,6 +86,12 @@ public class CameraLoader {
         }
     }
 
+    void takeFlash(boolean isOpen){
+        if(mCameraHelper.isInit()){
+            mCameraHelper.takeFlash(isOpen);
+        }
+    }
+
     void stopCamera(){
         mCameraHelper.release();
     }
