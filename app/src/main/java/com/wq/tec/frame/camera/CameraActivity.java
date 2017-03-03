@@ -76,6 +76,7 @@ public class CameraActivity extends WQActivity {
                 break;
             case R.id.cameralight:
                 CameraController.openFlash(isOpenFlash = !isOpenFlash);
+                findViewById(R.id.cameralight).setSelected(isOpenFlash);
                 break;
         }
     }
