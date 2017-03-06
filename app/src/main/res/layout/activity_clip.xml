@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/clip_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/clip_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="38.5dp"
+        android:background="#AF000000"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <View
+            android:id="@+id/actionback"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/app_back"
+            android:onClick="action" />
+
+        <TextView
+            android:id="@+id/actiontitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:onClick="action"
+            android:text="修饰"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <View
+            android:id="@+id/actionsure"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/app_sure"
+            android:onClick="action" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:background="#AF000000"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp">
+
+        <LinearLayout
+            android:id="@+id/clip_sel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:onClick="doControl"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/clip_sel" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8.5dp"
+                android:singleLine="true"
+                android:text="选取"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/clip_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="38dp"
+            android:layout_toRightOf="@+id/clip_sel"
+            android:onClick="doControl"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/clip_add" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8.5dp"
+                android:singleLine="true"
+                android:text="添加"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/clip_move"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="38dp"
+            android:layout_toRightOf="@+id/clip_add"
+            android:onClick="doControl"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/clip_move" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8.5dp"
+                android:singleLine="true"
+                android:text="移动"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/clip_del"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="38dp"
+            android:layout_toRightOf="@+id/clip_move"
+            android:onClick="doControl"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/clip_del" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8.5dp"
+                android:singleLine="true"
+                android:text="删除"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/clip_redo"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/clip_redo"
+                android:onClick="doControl" />
+
+            <View
+                android:id="@+id/clip_undo"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="20.5dp"
+                android:background="@drawable/clip_undo"
+                android:onClick="doControl" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

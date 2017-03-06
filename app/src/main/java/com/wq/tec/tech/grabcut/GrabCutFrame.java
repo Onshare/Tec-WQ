@@ -71,7 +71,7 @@ public class GrabCutFrame extends BaseFragment implements View.OnTouchListener{
     }
 
     int getPointRadius(){
-        return (int)(getResources().getDisplayMetrics().density * 3 + 0.5F);
+        return (int)(getResources().getDisplayMetrics().density * 8 + 0.5F);
     }
 
     void drawPointList(@NonNull Point srcPoint, @NonNull GrabCutLoader.GrabCutModel model, int color){
@@ -100,6 +100,7 @@ public class GrabCutFrame extends BaseFragment implements View.OnTouchListener{
         }
 
         private void initPaint(){
+            setScaleType(ScaleType.CENTER_CROP);
             mLowPaint.setStyle(Paint.Style.STROKE);
             mLowPaint.setStrokeWidth(getPointRadius());
 

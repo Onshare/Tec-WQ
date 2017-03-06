@@ -84,6 +84,7 @@ public class CameraFrame extends BaseFragment{
         super.onPause();
         mLoader.onPause();
         CameraController.setCameraLoader(null);
+        this.mShowResultView.setVisibility(View.GONE);
     }
 
     @Override

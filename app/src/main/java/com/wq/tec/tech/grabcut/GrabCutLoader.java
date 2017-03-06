@@ -65,10 +65,10 @@ public class GrabCutLoader{
             Point mPoint = new Point((int)event.getX(), (int)event.getY());
             if(model == GrabCutModel.HIGH_PRECISION){
                 getBackgroundPoint(mPoint);
-                mFrame.drawPointList(mPoint, model, Color.GRAY);
+                mFrame.drawPointList(mPoint, model, Color.parseColor("#A0D3D3D3"));
             }else if(model == GrabCutModel.LOW_PRECISION){
                 getForePoint(mPoint);
-                mFrame.drawPointList(mPoint, model, Color.GREEN);
+                mFrame.drawPointList(mPoint, model, Color.parseColor("#A0FFA6C1"));
             }
         }else if(event.getAction() == MotionEvent.ACTION_UP){
             if(model == GrabCutModel.HIGH_PRECISION){

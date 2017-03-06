@@ -18,6 +18,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
+import com.wq.tec.frame.clip.ClipActivity;
+import com.wq.tec.frame.clip.ClipPresenter;
 import com.wq.tec.frame.guid.GuidActivity;
 import com.wq.tec.tech.camera.CameraController;
 import com.wq.tec.tech.camera.CameraLoader;
@@ -87,6 +89,7 @@ public class CameraActivity extends WQActivity {
                 @Override
                 public void takePic(@NonNull Bitmap bitmap) {
                     mCameraShow.setImageBitmap(bitmap);
+//                    goToClip(bitmap);
                 }
             });
         }
@@ -163,5 +166,12 @@ public class CameraActivity extends WQActivity {
                 ImageManager.get().displayImage("file://"+imgPath, mCameraShow);
             }
         });
+    }
+
+    void goToClip(@NonNull Bitmap bitmap){
+        ClipPresenter.setBitmapResource(bitmap);
+        Intent mIntent = new Intent();
+        mIntent.setClass(this, ClipActivity.class);
+        startActivity(mIntent);
     }
 }
