@@ -2,6 +2,7 @@ package com.wq.tec.tech.camera;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
@@ -23,7 +24,6 @@ public class CameraLoader {
 
     private CameraHelper mCameraHelper ;
     private CameraFrame mFrame;
-    private int mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     private GPUImage gpu;
     private GPUImageFilter mFilter;
@@ -58,12 +58,10 @@ public class CameraLoader {
             public void onPictureTaken(byte[] data, Camera camera) {
                 try {
                     Bitmap result = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    if(CameraLoader.this.mFilter != null){
-                        if(CameraLoader.this.mView != null){
-                            CameraLoader.this.mView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-                        }
-                        result = gpu.getBitmapWithFilterApplied(result);
+                    if(CameraLoader.this.mView != null){
+                        CameraLoader.this.mView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
                     }
+                    result = gpu.getBitmapWithFilterApplied(result);
                     if(takePicCallBack != null){
                         takePicCallBack.takePic(result);
                     }
@@ -179,7 +177,7 @@ public class CameraLoader {
 
     private void showCameraPreView(int cameraId){
         Camera.CameraInfo info = new Camera.CameraInfo();
-        Camera.getCameraInfo(mCameraId = cameraId, info);
+        Camera.getCameraInfo(cameraId, info);
 
         int degrees = getDisPlayRotation();
         int result;

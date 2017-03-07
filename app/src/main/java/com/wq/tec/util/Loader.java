@@ -66,7 +66,7 @@ public final class Loader {
             WindowManager.LayoutParams win = getDialog().getWindow().getAttributes();
             win.width = DensityUtils.dp2px(getContext(), 16);
             win.height = DensityUtils.dp2px(getContext(), 16);
-            win.dimAmount = 0.3F;
+            win.dimAmount = 0.15F;
             win.gravity = Gravity.CENTER;
             getDialog().getWindow().setAttributes(win);
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

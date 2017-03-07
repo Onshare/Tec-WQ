@@ -18,6 +18,7 @@ public class CameraHelper {
     CameraHelper(@NonNull Context mContext){
         mScreenSize[0] = mContext.getResources().getDisplayMetrics().widthPixels;
         mScreenSize[1] = mContext.getResources().getDisplayMetrics().heightPixels;
+        mCamerId = Camera.CameraInfo.CAMERA_FACING_BACK;
     }
 
     public static class CameraInfo{
@@ -26,6 +27,7 @@ public class CameraHelper {
     }
 
     private Camera mCamera;
+    private int mCamerId;
 
     private boolean isInit = false;
 
@@ -36,6 +38,7 @@ public class CameraHelper {
             mCamera.release();
             mCamera = null;
             isInit = false;
+            mCamerId = Camera.CameraInfo.CAMERA_FACING_BACK;
         }
     }
 
@@ -44,7 +47,7 @@ public class CameraHelper {
     }
 
     boolean openCamera(){
-        return openCamera(Camera.CameraInfo.CAMERA_FACING_BACK);
+        return openCamera(mCamerId);
     }
 
     boolean openCamera(int cameraId){
@@ -53,9 +56,9 @@ public class CameraHelper {
             try {
                 mCamera = Camera.open(cameraId);
             } catch (Exception e) {
-                e.printStackTrace();
                 return false;
             }
+            mCamerId = cameraId;
         }
         Camera.Parameters mParameters = mCamera.getParameters();
         if(mParameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)){
@@ -96,6 +99,10 @@ public class CameraHelper {
 
     Camera getCamera(){
         return mCamera;
+    }
+
+    int getCamerId() {
+        return mCamerId;
     }
 
     void switchFocusMode(@NonNull String mode){
@@ -149,7 +156,7 @@ public class CameraHelper {
 
     void takePicture(Camera.PictureCallback jpegCallBack){
         Camera.Parameters mParameters = mCamera.getParameters();
-        mParameters.setRotation(90);
+        mParameters.setRotation(mCamerId == Camera.CameraInfo.CAMERA_FACING_BACK ? 90 : 90);
         mCamera.setParameters(mParameters);
         mCamera.takePicture(null, null, jpegCallBack);
     }
