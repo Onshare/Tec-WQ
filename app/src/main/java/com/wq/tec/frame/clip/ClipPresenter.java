@@ -31,6 +31,7 @@ public class ClipPresenter extends BasePresent<ClipActivity> {
         super.onResume();
         if(bitmap != null){
             mActivity.showImage(bitmap);
+            mActivity.showGround(bitmap);
         }
     }
 

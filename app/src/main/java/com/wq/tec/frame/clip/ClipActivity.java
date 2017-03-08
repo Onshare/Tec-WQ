@@ -9,9 +9,13 @@ import android.widget.ImageView;
 
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
+import com.wq.tec.open.BlackGroundView;
 import com.wq.tec.tech.grabcut.GrabCutController;
 import com.wq.tec.tech.grabcut.GrabCutFrame;
 import com.wq.tec.tech.grabcut.GrabCutLoader;
+
+import jp.co.cyberagent.android.gpuimage.GPUImage;
+import jp.co.cyberagent.android.gpuimage.GPUImageGaussianBlurFilter;
 
 /**
  * Created by N on 2017/3/6.
@@ -21,6 +25,7 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
 
     public static final int CLIP_RESULT = 1002;
 
+    BlackGroundView mGround;
     ImageView mClipImage ;
 
     @Override
@@ -29,6 +34,7 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
 
         addFragment(new GrabCutFrame(), R.id.clip_frame);
         mClipImage = (ImageView) findViewById(R.id.clip_image);
+        mGround = (BlackGroundView)findViewById(R.id.clip_ground);
     }
 
     public void action(View v){
@@ -38,11 +44,6 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
                 finish();
                 break;
             case R.id.actionsure:
-                GrabCutController.grabCutImage(new GrabCutLoader.GrabCutCallBack() {
-                    @Override
-                    public void done(@NonNull Bitmap result) {
-                    }
-                });
                 break;
         }
     }
@@ -53,6 +54,7 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
             case R.id.clip_sel:
                 switchViewSelect(resId);
                 GrabCutController.setGrabCutModel(GrabCutLoader.GrabCutModel.LOW_PRECISION);
+                findViewById(R.id.clip_clip).setVisibility(View.VISIBLE);
                 break;
             case R.id.clip_add:
                 switchViewSelect(resId);
@@ -67,6 +69,18 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
                 break;
             case R.id.clip_undo:
                 break;
+        }
+    }
+
+    public void startClip(View v){
+        if(R.id.clip_clip == v.getId()){
+            findViewById(R.id.clip_clip).setVisibility(View.GONE);
+            GrabCutController.grabCutImage(new GrabCutLoader.GrabCutCallBack() {
+                @Override
+                public void done(@NonNull Bitmap result) {
+
+                }
+            });
         }
     }
 
@@ -85,5 +99,12 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
 
     void showImage(@NonNull  Bitmap bitmap){
         GrabCutController.showImage(bitmap);
+    }
+
+    void showGround(@NonNull Bitmap bitmap){
+        GPUImage gpuImage = new GPUImage(this);
+        gpuImage.setFilter(new GPUImageGaussianBlurFilter(5F));
+        Bitmap overBitmap = gpuImage.getBitmapWithFilterApplied(bitmap);
+        mGround.setImageBitmap(overBitmap);
     }
 }

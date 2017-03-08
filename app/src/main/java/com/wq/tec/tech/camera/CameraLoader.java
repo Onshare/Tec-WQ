@@ -62,11 +62,11 @@ public class CameraLoader {
                         CameraLoader.this.mView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
                     }
                     result = gpu.getBitmapWithFilterApplied(result);
+                    stopCamera();
+                    mFrame.showResult(result);
                     if(takePicCallBack != null){
                         takePicCallBack.takePic(result);
                     }
-                    stopCamera();
-                    mFrame.showResult(result);
                 } catch (Exception e) {
                     System.gc();
                 }

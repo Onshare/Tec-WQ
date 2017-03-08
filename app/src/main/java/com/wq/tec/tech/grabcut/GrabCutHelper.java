@@ -104,7 +104,7 @@ public class GrabCutHelper {
         return result;
     }
 
-    Bitmap grabcut(@NonNull Rect rect){
+    Bitmap grabcut(@NonNull Rect rect) throws Exception{
         if(!isInit()){
             Log.e(TAG, "this GrabCut must be init");
             return null;

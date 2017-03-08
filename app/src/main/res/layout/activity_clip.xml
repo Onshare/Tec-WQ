@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.wq.tec.open.BlackGroundView
+        android:id="@+id/clip_ground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <FrameLayout
         android:id="@+id/clip_frame"
         android:layout_width="match_parent"
@@ -51,6 +56,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/clip_bottom"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_alignParentBottom="true"
@@ -174,6 +180,18 @@
                 android:background="@drawable/clip_undo"
                 android:onClick="doControl" />
         </LinearLayout>
-
     </RelativeLayout>
+    <Button
+        android:id="@+id/clip_clip"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:text="启动选图"
+        android:layout_above="@+id/clip_bottom"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/camera_cover_control"
+        android:textColor="@android:color/white"
+        android:textSize="13sp"
+        android:onClick="startClip"
+        android:visibility="gone"/>
 </RelativeLayout>

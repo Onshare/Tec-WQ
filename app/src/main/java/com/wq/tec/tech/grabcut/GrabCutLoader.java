@@ -30,7 +30,7 @@ public class GrabCutLoader{
 
     GrabCutFrame mFrame;
     GrabCutHelper mHelper;
-    GrabCutModel model = GrabCutModel.LOW_PRECISION;
+    GrabCutModel model = null;
 
 
     private Bitmap bitmap;
@@ -57,6 +57,10 @@ public class GrabCutLoader{
             mFrame.reSet(0);
             mFrame.reSet(1);
         }
+    }
+
+    public GrabCutModel getModel() {
+        return model;
     }
 
     @TargetApi(19)
@@ -86,24 +90,27 @@ public class GrabCutLoader{
                 public void run() {
                     isRunning = true;
                     if(mHelper.isInit()){
-                        Rect rect = campImageRect(forePoint);
-                        mHelper.controMaskScalar(rect);
-                        mHelper.setBackGroundPoint(backgroundPoint, mFrame.getPointRadius());
-                        mHelper.setForePoint(forePoint, mFrame.getPointRadius());
-                        android.util.Log.e("GrabCut loader : ", "grabcut start .... ");
-                        final Bitmap bitmap = mHelper.grabcut(rect);
-                        android.util.Log.e("GrabCut loader : ", "grabcut was done .... ");
-                        android.util.Log.e("GrabCut loader : ", "Rect = "+rect+" 用时： "+ SystemClock.currentThreadTimeMillis()+"ms");
-                        osHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(callBack != null){
-                                    callBack.done(bitmap);
+                        try {
+                            Rect rect = campImageRect(forePoint);
+                            mHelper.controMaskScalar(rect);
+                            mHelper.setBackGroundPoint(backgroundPoint, mFrame.getPointRadius());
+                            mHelper.setForePoint(forePoint, mFrame.getPointRadius());
+                            android.util.Log.e("GrabCut loader : ", "grabcut start .... ");
+                            final Bitmap bitmap = mHelper.grabcut(rect);
+                            android.util.Log.e("GrabCut loader : ", "grabcut was done .... ");
+                            android.util.Log.e("GrabCut loader : ", "Rect = "+rect+" 用时： "+ SystemClock.currentThreadTimeMillis()+"ms");
+                            osHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(callBack != null){
+                                        callBack.done(bitmap);
+                                    }
+                                    mFrame.reSet(0);
+                                    mFrame.reSet(1);
                                 }
-                                mFrame.reSet(0);
-                                mFrame.reSet(1);
-                            }
-                        });
+                            });
+                        } catch (Exception e) {
+                        }
                     }
                     isRunning = false;
                 }
