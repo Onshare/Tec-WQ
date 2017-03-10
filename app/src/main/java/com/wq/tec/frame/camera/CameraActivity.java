@@ -2,10 +2,9 @@ package com.wq.tec.frame.camera;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -27,8 +26,6 @@ import com.wq.tec.tech.camera.CameraController;
 import com.wq.tec.tech.camera.CameraLoader;
 import com.wq.tec.util.FileCacheUtil;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * Created by NoName on 2017/1/19.
@@ -174,7 +171,7 @@ public class CameraActivity extends WQActivity {
     }
 
     void goToClip(@NonNull Bitmap bitmap){
-        Bitmap result = scaleBitmap(bitmap, 100);
+        Bitmap result = scaleBitmap(bitmap, 500);
         log(result.getWidth()+" "+ result.getHeight()+" "+bitmap.getWidth()+" "+bitmap.getHeight());
         ClipPresenter.setBitmapResource(result);
         Intent mIntent = new Intent();
@@ -184,24 +181,20 @@ public class CameraActivity extends WQActivity {
 
 
     private Bitmap scaleBitmap(@NonNull Bitmap bitmap, int scaleSize){//单位KB
-        ByteArrayOutputStream bops = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bops);
-        byte[] data = bops.toByteArray();
-        try {
-            bops.close();
-        } catch (IOException e) {
-        }
-        int length = data.length / 1024;
+        int length = bitmap.getByteCount() / 1024;
         double be = (double) length / scaleSize;
         if(be > 1){
-            Matrix matrix = new Matrix();
-            matrix.setScale((float) (1 / be), (float) (1 / be));
-            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            int[] mScreentSize = new int[]{getResources().getDisplayMetrics().widthPixels / 2, getResources().getDisplayMetrics().heightPixels / 2};
 //            BitmapFactory.Options options = new BitmapFactory.Options();
-////            be = Math.sqrt(be);
-//            options.inSampleSize = (int) 2.0;
+//            be = mScreentSize[0] / bitmap.getWidth() > mScreentSize[1] / bitmap.getHeight() ? (double) mScreentSize[0] / bitmap.getWidth() : (double) mScreentSize[1] / bitmap.getHeight();
+//            options.inSampleSize = (int) (be - (int)be > 0.5 ? be + 1 : be);
+//            options.inSampleSize = options.inSampleSize == 1 ? options.inSampleSize + 1 : options.inSampleSize;
+//            ByteArrayOutputStream bops = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bops);
+//            byte[] data = bops.toByteArray();
 //            log("inscampleSize =  "+options.inSampleSize+" be = "+be);
 //            return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+            return ThumbnailUtils.extractThumbnail(bitmap, mScreentSize[0], mScreentSize[1]);
         }
         return bitmap;
     }

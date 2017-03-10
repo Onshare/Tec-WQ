@@ -1,6 +1,14 @@
 package com.wq.tec.frame.clip;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
@@ -10,9 +18,14 @@ import android.widget.ImageView;
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
 import com.wq.tec.open.BlackGroundView;
+import com.wq.tec.open.ClipControllerView;
 import com.wq.tec.tech.grabcut.GrabCutController;
 import com.wq.tec.tech.grabcut.GrabCutFrame;
 import com.wq.tec.tech.grabcut.GrabCutLoader;
+import com.wq.tec.util.Loader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageGaussianBlurFilter;
@@ -21,20 +34,26 @@ import jp.co.cyberagent.android.gpuimage.GPUImageGaussianBlurFilter;
  * Created by N on 2017/3/6.
  */
 
-public class ClipActivity extends WQActivity<ClipPresenter> {
+public class ClipActivity extends WQActivity<ClipPresenter> implements View.OnTouchListener{
 
     public static final int CLIP_RESULT = 1002;
 
     BlackGroundView mGround;
-    ImageView mClipImage ;
+    ClipControllerView mClipImage ;//展示前景的
+
+    private boolean isIntercept = false;
+
+    private List<Path> mSelectPathList = new ArrayList<>();
+    private List<Path> mCancelPathList = new ArrayList<>();
 
     @Override
     protected void onCreateActivity(Bundle savedInstanceState) {
         setContentView(R.layout.activity_clip);
 
         addFragment(new GrabCutFrame(), R.id.clip_frame);
-        mClipImage = (ImageView) findViewById(R.id.clip_image);
+        mClipImage = (ClipControllerView) findViewById(R.id.clip_image);
         mGround = (BlackGroundView)findViewById(R.id.clip_ground);
+        mClipImage.setOnTouchListener(this);
     }
 
     public void action(View v){
@@ -78,9 +97,11 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
             GrabCutController.grabCutImage(new GrabCutLoader.GrabCutCallBack() {
                 @Override
                 public void done(@NonNull Bitmap result) {
-
+                    Loader.stopLoading(100);
+                    showBitmapColor(result);
                 }
             });
+            Loader.makeLoding(this, 100);
         }
     }
 
@@ -88,6 +109,8 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
     protected void onDestroy() {
         super.onDestroy();
         GrabCutController.releaseImage();
+        mSelectPathList.clear();
+        mCancelPathList.clear();
     }
 
     void switchViewSelect(int resId){
@@ -95,6 +118,8 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
         findViewById(R.id.clip_add).setSelected(resId == R.id.clip_add);
         findViewById(R.id.clip_move).setSelected(resId == R.id.clip_move);
         findViewById(R.id.clip_del).setSelected(resId == R.id.clip_del);
+        findViewById(R.id.clip_clip).setVisibility(resId == R.id.clip_sel ? View.VISIBLE : View.GONE);
+        isIntercept = resId == R.id.clip_add || resId == R.id.clip_del;
     }
 
     void showImage(@NonNull  Bitmap bitmap){
@@ -106,5 +131,94 @@ public class ClipActivity extends WQActivity<ClipPresenter> {
         gpuImage.setFilter(new GPUImageGaussianBlurFilter(5F));
         Bitmap overBitmap = gpuImage.getBitmapWithFilterApplied(bitmap);
         mGround.setImageBitmap(overBitmap);
+    }
+
+    void showBitmapColor(Bitmap bitmap){
+        Bitmap overLayer = Bitmap.createBitmap(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
+        Canvas cv = new Canvas(overLayer);
+        Paint mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        cv.drawBitmap(bitmap, null, new Rect(0, 0, cv.getWidth(), cv.getHeight()) , mPaint);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
+        mPaint.setColor(mPresent.getColor());
+        cv.drawRect(new Rect(0, 0, cv.getWidth(), cv.getHeight()), mPaint);
+
+        Bitmap page2 = Bitmap.createBitmap(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
+        Canvas cp2 = new Canvas(page2);
+        mPaint.setXfermode(null);
+        cp2.drawBitmap(mPresent.getDstBitmap(), null, new Rect(0, 0, cv.getWidth(), cv.getHeight()) , mPaint);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        cp2.drawBitmap(overLayer, 0, 0, mPaint);
+//        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+//        cv.drawBitmap(page2, 0, 0, mPaint);
+
+        Canvas dstCanvas = mPresent.getDstCanvas();
+        Paint dstPaint = mPresent.getClipPaint();
+        dstPaint.reset();
+        dstPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+        dstCanvas.drawBitmap(page2, null, new Rect(0, 0, cv.getWidth(), cv.getHeight()), dstPaint);
+        mPresent.submitCanvas(mClipImage);
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if(R.id.clip_image == v.getId()){
+            int action = event.getAction();
+            float scalX = event.getX();
+            float scalY = event.getY();
+            switch (action){
+                case MotionEvent.ACTION_MOVE:
+                    if(mPath == null){
+                        mPath = new Path();
+                        mPath.moveTo(scalX, scalY);
+                    }else {
+                        mPath.lineTo(scalX, scalY);
+                    }
+                    canvas();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    if(0 == getControlId()){
+                        mSelectPathList.add(mPath);
+                    }else if(1 == getControlId()){
+                        mCancelPathList.add(mPath);
+                    }
+                    mPath = null;
+                    break;
+            }
+        }
+        return isIntercept;
+    }
+
+    private Path mPath ;
+
+    void canvas(){
+        if(getControlId() == 0 || getControlId() == 1){
+            Paint mPaint = mPresent.getClipPaint();
+            mPaint.setAntiAlias(true);
+            mPaint.setStrokeWidth(30);
+            mPaint.setStyle(Paint.Style.STROKE);
+
+            if(1 == getControlId()){
+                mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                mPaint.setColor(Color.TRANSPARENT);
+            }else {
+                mPaint.setColor(mPresent.getColor());
+            }
+            mClipImage.invalidate(mSelectPathList, mCancelPathList, mPaint);
+//            cv.drawPath(mPath, mPaint);
+//            mPresent.submitCanvas(mClipImage);
+            mPaint.reset();
+        }
+    }
+
+    private int getControlId(){
+        if(findViewById(R.id.clip_add).isSelected()){
+            return 0;
+        }else if(findViewById(R.id.clip_del).isSelected()){
+            return 1;
+        }
+        return -1;
     }
 }
