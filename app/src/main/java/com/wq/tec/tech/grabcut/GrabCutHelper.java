@@ -82,7 +82,7 @@ public class GrabCutHelper {
         int col = mast.cols();
         for(Point mPoint : mPointList){
             if(mPoint.x <= row && mPoint.y <= col){
-                Imgproc.circle(mast, new org.opencv.core.Point(mPoint.x, mPoint.y), radius < 1 ? 1 : radius, Scalar.all(Imgproc.GC_FGD));
+                Imgproc.circle(mast, new org.opencv.core.Point(mPoint.x, mPoint.y), radius < 1 ? 1 : radius, Scalar.all(Imgproc.GC_PR_FGD));
             }
         }
     }
@@ -92,7 +92,7 @@ public class GrabCutHelper {
         int col = mast.cols();
         for(Point mPoint : mPointList){
             if(mPoint.x <= row && mPoint.y <= col){
-                Imgproc.circle(mast, new org.opencv.core.Point(mPoint.x, mPoint.y), radius < 1 ? 1 : radius, Scalar.all(Imgproc.GC_BGD));
+                Imgproc.circle(mast, new org.opencv.core.Point(mPoint.x, mPoint.y), radius < 1 ? 1 : radius, Scalar.all(Imgproc.GC_PR_BGD));
             }
         }
     }

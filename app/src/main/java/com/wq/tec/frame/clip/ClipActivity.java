@@ -98,6 +98,7 @@ public class ClipActivity extends WQActivity<ClipPresenter> implements View.OnTo
                 @Override
                 public void done(@NonNull Bitmap result) {
                     Loader.stopLoading(100);
+                    findViewById(R.id.clip_sel).setSelected(false);
                     showBitmapColor(result);
                 }
             });
@@ -133,31 +134,23 @@ public class ClipActivity extends WQActivity<ClipPresenter> implements View.OnTo
         mGround.setImageBitmap(overBitmap);
     }
 
+    //合成
     void showBitmapColor(Bitmap bitmap){
-        Bitmap overLayer = Bitmap.createBitmap(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
-        Canvas cv = new Canvas(overLayer);
+        Canvas dstCanvas = mPresent.getDstCanvas();
+        Paint dstPaint = mPresent.getClipPaint();
+        dstCanvas.drawBitmap(bitmap, null, new Rect(0, 0, dstCanvas.getWidth(), dstCanvas.getHeight()), dstPaint);
+        dstCanvas.save();
+
+        Bitmap overlay = Bitmap.createBitmap(dstCanvas.getWidth(), dstCanvas.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas cv = new Canvas(overlay);
         Paint mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        cv.drawBitmap(bitmap, null, new Rect(0, 0, cv.getWidth(), cv.getHeight()) , mPaint);
+        cv.drawBitmap(mPresent.getDstBitmap(), null, new Rect(0, 0, cv.getWidth(), cv.getHeight()) , mPaint);
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
         mPaint.setColor(mPresent.getColor());
         cv.drawRect(new Rect(0, 0, cv.getWidth(), cv.getHeight()), mPaint);
 
-        Bitmap page2 = Bitmap.createBitmap(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
-        Canvas cp2 = new Canvas(page2);
-        mPaint.setXfermode(null);
-        cp2.drawBitmap(mPresent.getDstBitmap(), null, new Rect(0, 0, cv.getWidth(), cv.getHeight()) , mPaint);
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        cp2.drawBitmap(overLayer, 0, 0, mPaint);
-//        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-//        cv.drawBitmap(page2, 0, 0, mPaint);
-
-        Canvas dstCanvas = mPresent.getDstCanvas();
-        Paint dstPaint = mPresent.getClipPaint();
-        dstPaint.reset();
-        dstPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-        dstCanvas.drawBitmap(page2, null, new Rect(0, 0, cv.getWidth(), cv.getHeight()), dstPaint);
-        mPresent.submitCanvas(mClipImage);
+        mClipImage.setImageBitmap(overlay);
     }
 
 
