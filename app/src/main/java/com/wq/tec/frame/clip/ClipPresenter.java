@@ -37,13 +37,17 @@ public class ClipPresenter extends BasePresent<ClipActivity> {
 //        if(bitmap != null){
 //            dstBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
 //        } else {
-            dstBitmap = Bitmap.createBitmap(mActivity.getResources().getDisplayMetrics().widthPixels, mActivity.getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
 //        }
+        resetDstBitmap();
         mCanvas = new Canvas(dstBitmap);
     }
 
     Bitmap getDstBitmap(){
         return dstBitmap;
+    }
+
+    Bitmap resetDstBitmap(){
+        return dstBitmap = Bitmap.createBitmap(mActivity.getResources().getDisplayMetrics().widthPixels, mActivity.getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
     }
 
     Canvas getDstCanvas(){
@@ -56,10 +60,6 @@ public class ClipPresenter extends BasePresent<ClipActivity> {
 
     Paint getClipPaint(){
         return mPaint;
-    }
-
-    void submitCanvas(@NonNull ImageView imageView){
-        imageView.setImageBitmap(dstBitmap);
     }
 
     @Override

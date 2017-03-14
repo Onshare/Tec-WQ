@@ -58,7 +58,7 @@ public class GrabCutFrame extends BaseFragment implements View.OnTouchListener{
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mLoader.canvasTouchModel(event);
-        return true;
+        return mLoader.getModel() != null;
     }
 
     @Override
