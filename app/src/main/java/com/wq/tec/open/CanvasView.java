@@ -110,7 +110,8 @@ public class CanvasView extends ImageView {
         Bitmap cache = getDrawingCache();
 
         Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Paint bp = new Paint(mPaint);
+        Paint bp = new Paint();
+        bp.setAntiAlias(true);
         Canvas canvas = new Canvas(bitmap);
         float[] colorMax = new float[]{
                 1.0F, 0, 0, 0, 0,

@@ -70,16 +70,12 @@ public class ClipActivity extends WQActivity<ClipPresenter>{//// TODO: 2017/3/14
                     canvas.drawBitmap(result, null, new Rect(0, 0, overyLay.getWidth(), overyLay.getHeight()), mPaint);
                     mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                     canvas.drawBitmap(ClipPresenter.getBitmap(), null, new Rect(0, 0, overyLay.getWidth(), overyLay.getHeight()), mPaint);
-
-
                     canvas.save();
 
-                    mClipImage.setBackgroundColor(Color.GRAY);
-                    mClipImage.setImageBitmap(overyLay);
+                    ClipPresenter.setBitmapResource(overyLay);
+                    setResult(CLIP_RESULT);
+                    this.finish();
                 }
-//                ClipPresenter.setBitmapResource();
-//                setResult(CLIP_RESULT);
-//                this.finish();
                 mClipImage.reSet();
                 break;
         }

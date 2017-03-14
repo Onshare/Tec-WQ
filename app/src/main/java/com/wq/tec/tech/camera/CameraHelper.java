@@ -85,6 +85,9 @@ public class CameraHelper {
         for(int i = 0; i < mSize.size(); i++){
             Camera.Size s = mSize.get(i);
             result[i] = Math.abs(- beRatio + (double)s.height / s.width) ;
+            if(s.width > mScreenSize[1]){
+                result[i] = Integer.MAX_VALUE;
+            }
         }
         int index = 0;
         double be = result[index];
