@@ -14,7 +14,6 @@ import com.wq.tec.WQActivity;
 
 public class RenderActivity extends WQActivity<RenderPresenter> {
 
-
     @Override
     protected void onCreateActivity(Bundle savedInstanceState) {
         setContentView(R.layout.activity_render);

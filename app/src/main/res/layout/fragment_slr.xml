@@ -188,5 +188,8 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/ui_seekbar"/>
 </RelativeLayout>

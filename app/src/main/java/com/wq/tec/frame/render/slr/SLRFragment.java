@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import com.wq.tec.R;
 import com.wq.tec.frame.clip.ClipActivity;
@@ -31,10 +32,12 @@ import jp.co.cyberagent.android.gpuimage.GPUImagePixelationFilter;
  * Created by N on 2017/3/15.
  */
 
-public class SLRFragment extends RenderBaseFragment implements View.OnClickListener, View.OnTouchListener{
+public class SLRFragment extends RenderBaseFragment implements View.OnClickListener, View.OnTouchListener, SeekBar.OnSeekBarChangeListener{
 
     Bitmap slrBitmap;
     View mBgBlur, mHorBlur, mForBlur, mBgGray;
+    SeekBar bar = null;  int prevProgress = 50;
+
     GPUImage gpuImage = null;
     GPUImageFilter mFilter = null;
 
@@ -62,6 +65,7 @@ public class SLRFragment extends RenderBaseFragment implements View.OnClickListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        bar = (SeekBar) view.findViewById(R.id.ver_progressBar);
         view.findViewById(R.id.actionback).setOnClickListener(this);
         view.findViewById(R.id.actionsure).setOnClickListener(this);
         (mBgBlur = view.findViewById(R.id.slr_bg_blur)).setOnClickListener(this);
@@ -70,6 +74,10 @@ public class SLRFragment extends RenderBaseFragment implements View.OnClickListe
         (mBgGray = view.findViewById(R.id.slr_bg_gray)).setOnClickListener(this);
         view.findViewById(R.id.slr_compare).setOnTouchListener(this);
         view.findViewById(R.id.slr_redo).setOnClickListener(this);
+
+        bar.setProgress(prevProgress);
+        bar.setVisibility(View.GONE);
+        bar.setOnSeekBarChangeListener(this);
     }
 
     @Override
@@ -101,15 +109,19 @@ public class SLRFragment extends RenderBaseFragment implements View.OnClickListe
         switch (v.getId()){
             case R.id.slr_bg_blur:
                 switchView(v.getId());
+                bar.setVisibility(View.VISIBLE);
                 break;
             case R.id.slr_hor_blur:
                 switchView(v.getId());
+                bar.setVisibility(View.VISIBLE);
                 break;
             case R.id.slr_for_blur:
                 switchView(v.getId());
+                bar.setVisibility(View.VISIBLE);
                 break;
             case R.id.slr_bg_gray:
                 switchView(v.getId());
+                bar.setVisibility(View.GONE);
                 break;
             case R.id.slr_redo:
                 goClip();
@@ -137,7 +149,7 @@ public class SLRFragment extends RenderBaseFragment implements View.OnClickListe
         mForBlur.setSelected(R.id.slr_for_blur == resId);
         mBgGray.setSelected(R.id.slr_bg_gray == resId);
         if(slrBitmap != null){
-            handFilter(50);
+            handFilter(bar.getProgress());
         }else{
             goClip();
         }
@@ -164,7 +176,7 @@ public class SLRFragment extends RenderBaseFragment implements View.OnClickListe
         if(requestCode == resultCode && resultCode == ClipActivity.CLIP_RESULT){
             slrBitmap = ClipPresenter.getBitmap();
             ClipPresenter.setBitmapResource(null);
-            handFilter(80);
+            handFilter(bar.getProgress());
         }
     }
 
@@ -227,5 +239,19 @@ public class SLRFragment extends RenderBaseFragment implements View.OnClickListe
 
     protected float range(final int percentage, final float start, final float end) {
         return (end - start) * percentage / 100.0f + start;
+    }
+
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if(Math.abs(seekBar.getProgress() - prevProgress) > 5){
+            handFilter(prevProgress = bar.getProgress());
+        }
     }
 }
