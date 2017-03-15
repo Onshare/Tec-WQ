@@ -116,7 +116,7 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_centerVertical="true"
-            android:background="@mipmap/camera_close"
+            android:background="@mipmap/app_close"
             android:onClick="doAction" />
 
         <View

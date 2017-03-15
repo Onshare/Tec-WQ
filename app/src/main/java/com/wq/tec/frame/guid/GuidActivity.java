@@ -15,6 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.jazz.libs.ImageLoader.ImageManager;
 import com.jazz.libs.util.BitmapUtil;
@@ -52,27 +53,38 @@ public class GuidActivity extends WQActivity<GuidPresenter> implements AdapterVi
         addFragment(new CameraFrame(), R.id.camera_frame);
         mPager = (com.wq.tec.open.gallery.FancyCoverFlow)findViewById(R.id.guid_pager);
         mPager.setOnItemSelectedListener(this);
+
+        initActionBar();
     }
 
-    public void action(View v){
-        int resId = v.getId();
-        switch (resId){
-            case R.id.actionback:
-                finish();
-                break;
-            case R.id.actionsure:
-                GuidRecord record = (GuidRecord) mPager.getSelectedItem();
-                Intent mIntent = new Intent(this, CameraActivity.class);
-                if(record != null){
-                    mIntent.putExtra("URL_CLIP", record.clip_url);
-                    mIntent.putExtra("URL_ORIGIN", record.origin_url);
-                    mIntent.putExtra("URL_BACKGROUND", record.background_url);
-                }
-                startActivity(mIntent);
-                this.finish();
-                break;
-        }
+    void initActionBar(){
+        ((TextView)findViewById(R.id.actiontitle)).setText("用户指导");
+        findViewById(R.id.actionsure).setOnClickListener(actionClick);
+        findViewById(R.id.actionback).setOnClickListener(actionClick);
     }
+
+    private View.OnClickListener actionClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int resId = v.getId();
+            switch (resId){
+                case R.id.actionback:
+                    finish();
+                    break;
+                case R.id.actionsure:
+                    GuidRecord record = (GuidRecord) mPager.getSelectedItem();
+                    Intent mIntent = new Intent(GuidActivity.this, CameraActivity.class);
+                    if(record != null){
+                        mIntent.putExtra("URL_CLIP", record.clip_url);
+                        mIntent.putExtra("URL_ORIGIN", record.origin_url);
+                        mIntent.putExtra("URL_BACKGROUND", record.background_url);
+                    }
+                    startActivity(mIntent);
+                    GuidActivity.this.finish();
+                    break;
+            }
+        }
+    };
 
     public void select(View v){
         mPager.setVisibility(View.GONE);

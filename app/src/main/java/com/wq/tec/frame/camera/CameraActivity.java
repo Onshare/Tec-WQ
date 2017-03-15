@@ -22,6 +22,8 @@ import com.wq.tec.WQActivity;
 import com.wq.tec.frame.clip.ClipActivity;
 import com.wq.tec.frame.clip.ClipPresenter;
 import com.wq.tec.frame.guid.GuidActivity;
+import com.wq.tec.frame.render.RenderActivity;
+import com.wq.tec.frame.render.RenderPresenter;
 import com.wq.tec.tech.camera.CameraController;
 import com.wq.tec.tech.camera.CameraLoader;
 import com.wq.tec.util.FileCacheUtil;
@@ -172,11 +174,11 @@ public class CameraActivity extends WQActivity {
 
     void goToClip(@NonNull Bitmap bitmap){
         Bitmap result = scaleBitmap(bitmap, 500);
-        log(result.getWidth()+" "+ result.getHeight()+" "+bitmap.getWidth()+" "+bitmap.getHeight());
-        ClipPresenter.setBitmapResource(result);
+        RenderPresenter.setBitmapResource(result);
         Intent mIntent = new Intent();
-        mIntent.setClass(this, ClipActivity.class);
+        mIntent.setClass(this, RenderActivity.class);
         startActivity(mIntent);
+        this.finish();
     }
 
 

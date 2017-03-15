@@ -16,7 +16,7 @@ import com.jazz.libs.controller.BasePresent;
 
 public class ClipPresenter extends BasePresent<ClipActivity> {
 
-    static Bitmap bitmap = null;
+    private static Bitmap bitmap = null;
     private Bitmap dstBitmap = null;
 
     private Canvas mCanvas ;
@@ -34,10 +34,6 @@ public class ClipPresenter extends BasePresent<ClipActivity> {
     @Override
     protected void onCreate(Bundle savedInstanceState, ClipActivity activity) {
         super.onCreate(savedInstanceState, activity);
-//        if(bitmap != null){
-//            dstBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-//        } else {
-//        }
         resetDstBitmap();
         mCanvas = new Canvas(dstBitmap);
     }
@@ -74,9 +70,6 @@ public class ClipPresenter extends BasePresent<ClipActivity> {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(bitmap != null && !bitmap.isRecycled()){
-            bitmap.recycle();
-        }
         bitmap = null;
     }
 }

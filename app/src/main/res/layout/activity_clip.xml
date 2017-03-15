@@ -7,6 +7,11 @@
         android:id="@+id/clip_ground"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+<RelativeLayout
+    android:id="@+id/clip_body"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
     <FrameLayout
         android:id="@+id/clip_frame"
@@ -20,40 +25,10 @@
         android:background="@android:color/transparent"
         android:scaleType="centerCrop" />
 
-    <RelativeLayout
+    <include
         android:layout_width="match_parent"
         android:layout_height="38.5dp"
-        android:background="#AF000000"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-
-        <View
-            android:id="@+id/actionback"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_centerVertical="true"
-            android:background="@mipmap/app_back"
-            android:onClick="action" />
-
-        <TextView
-            android:id="@+id/actiontitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:onClick="action"
-            android:text="修饰"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-
-        <View
-            android:id="@+id/actionsure"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@mipmap/app_sure"
-            android:onClick="action" />
-    </RelativeLayout>
+        layout="@layout/ui_actionbar"/>
 
     <RelativeLayout
         android:id="@+id/clip_bottom"
@@ -194,4 +169,5 @@
         android:textSize="13sp"
         android:onClick="startClip"
         android:visibility="gone"/>
+</RelativeLayout>
 </RelativeLayout>

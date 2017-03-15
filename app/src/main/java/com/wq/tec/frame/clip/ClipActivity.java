@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
@@ -52,34 +53,44 @@ public class ClipActivity extends WQActivity<ClipPresenter>{//// TODO: 2017/3/14
         addFragment(new GrabCutFrame(), R.id.clip_frame);
         mClipImage = (CanvasView) findViewById(R.id.clip_image);
         mGround = (BlackGroundView)findViewById(R.id.clip_ground);
+        initActionBar();
     }
 
-    public void action(View v){
-        int resId = v.getId();
-        switch (resId){
-            case R.id.actionback:
-                finish();
-                break;
-            case R.id.actionsure:
-                Bitmap result = mClipImage.createBitmap();
-                if(result != null && ClipPresenter.getBitmap() != null){
-                    Bitmap overyLay = mPresent.resetDstBitmap();
-                    Canvas canvas = new Canvas(overyLay);
-                    Paint mPaint = new Paint();
-                    mPaint.setAntiAlias(true);
-                    canvas.drawBitmap(result, null, new Rect(0, 0, overyLay.getWidth(), overyLay.getHeight()), mPaint);
-                    mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                    canvas.drawBitmap(ClipPresenter.getBitmap(), null, new Rect(0, 0, overyLay.getWidth(), overyLay.getHeight()), mPaint);
-                    canvas.save();
+    void initActionBar(){
+        ((TextView)findViewById(R.id.actiontitle)).setText("修饰");
+        findViewById(R.id.actionsure).setOnClickListener(actionClick);
+        findViewById(R.id.actionback).setOnClickListener(actionClick);
+    }
 
-                    ClipPresenter.setBitmapResource(overyLay);
-                    setResult(CLIP_RESULT);
-                    this.finish();
-                }
-                mClipImage.reSet();
-                break;
+    private View.OnClickListener actionClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int resId = v.getId();
+            switch (resId){
+                case R.id.actionback:
+                    finish();
+                    break;
+                case R.id.actionsure:
+                    Bitmap result = mClipImage.createBitmap();
+                    if(result != null && ClipPresenter.getBitmap() != null){
+                        Bitmap overyLay = mPresent.resetDstBitmap();
+                        Canvas canvas = new Canvas(overyLay);
+                        Paint mPaint = new Paint();
+                        mPaint.setAntiAlias(true);
+                        canvas.drawBitmap(result, null, new Rect(0, 0, overyLay.getWidth(), overyLay.getHeight()), mPaint);
+                        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                        canvas.drawBitmap(ClipPresenter.getBitmap(), null, new Rect(0, 0, overyLay.getWidth(), overyLay.getHeight()), mPaint);
+                        canvas.save();
+
+                        ClipPresenter.setBitmapResource(overyLay);
+                        setResult(CLIP_RESULT);
+                        ClipActivity.this.finish();
+                    }
+                    mClipImage.reSet();
+                    break;
+            }
         }
-    }
+    };
 
     public void doControl(View view){
         int resId = view.getId();
@@ -178,7 +189,6 @@ public class ClipActivity extends WQActivity<ClipPresenter>{//// TODO: 2017/3/14
 
     int[] point = new int[2];
 
-    @TargetApi(21)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(findViewById(R.id.clip_move).isSelected()){
@@ -186,8 +196,8 @@ public class ClipActivity extends WQActivity<ClipPresenter>{//// TODO: 2017/3/14
                 point[0] = (int) event.getX();
                 point[1] = (int) event.getY();
             }else if(MotionEvent.ACTION_MOVE == event.getAction()){
-                mClipImage.setTranslationX(event.getX() - point[0]);
-                mClipImage.setTranslationY(event.getY() - point[1]);
+                findViewById(R.id.clip_body).setTranslationX(event.getX() - point[0]);
+                findViewById(R.id.clip_body).setTranslationY(event.getY() - point[1]);
             }else if(MotionEvent.ACTION_UP == event.getAction() || MotionEvent.ACTION_CANCEL == event.getAction()){
                 point[0] = 0;
                 point[1] = 0;
