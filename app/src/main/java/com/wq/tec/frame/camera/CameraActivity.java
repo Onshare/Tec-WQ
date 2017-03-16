@@ -196,7 +196,7 @@ public class CameraActivity extends WQActivity {
     void goToClip(@NonNull Bitmap bitmap){
         Bitmap result = scaleBitmap(bitmap, 500);
         ClipPresenter.setBitmapResource(result);
-        startActivityForResult(new Intent(this, ClipActivity.class), ComposeActivity.COMPOSE_RESULT);
+        startActivityForResult(new Intent(this, ClipActivity.class), ClipActivity.CLIP_RESULT);
     }
 
 
@@ -226,7 +226,7 @@ public class CameraActivity extends WQActivity {
             goToComPose(ClipPresenter.getBitmap());
             ClipPresenter.setBitmapResource(null);
         }else if(requestCode == resultCode && resultCode == ComposeActivity.COMPOSE_RESULT && ComposeActivity.getCompImage() != null){
-            goToClip(ComposeActivity.getCompImage());
+            goToRender(ComposeActivity.getCompImage());
         }
     }
 }
