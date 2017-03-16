@@ -219,7 +219,7 @@ public class FilterFragment extends RenderBaseFragment implements View.OnClickLi
         for(int i = 0; i < mFilterImgs.length && mFilterImgs[i] != null && !mFilterImgs[i].isRecycled(); i++){
             mFilterImgs[i].recycle();
         }
-        if(mFilterBitmap != null && !mFilterBitmap.isRecycled()){
+        if(mFilterBitmap != null && !mFilterBitmap.isRecycled()){//todo 待测试
             mFilterBitmap.recycle();
         }
     }
