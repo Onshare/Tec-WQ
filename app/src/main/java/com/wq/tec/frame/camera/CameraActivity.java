@@ -21,6 +21,7 @@ import com.wq.tec.R;
 import com.wq.tec.WQActivity;
 import com.wq.tec.frame.clip.ClipActivity;
 import com.wq.tec.frame.clip.ClipPresenter;
+import com.wq.tec.frame.compose.ComposeActivity;
 import com.wq.tec.frame.guid.GuidActivity;
 import com.wq.tec.frame.render.RenderActivity;
 import com.wq.tec.frame.render.RenderPresenter;
@@ -48,7 +49,7 @@ public class CameraActivity extends WQActivity {
 
     private ImageView mCameraShow;
     private ImageView mCameraCover;
-    private String[] covers = new String[3];
+    private String[] covers = new String[3];//极限智拍有背景
     private int mCoverModel = -1;
 
     @Override
@@ -93,7 +94,11 @@ public class CameraActivity extends WQActivity {
                 @Override
                 public void takePic(@NonNull Bitmap bitmap) {
                     mCameraShow.setImageBitmap(bitmap);
-                    goToClip(bitmap);
+                    if(TextUtils.isEmpty(covers[2])){
+                        goToRender(bitmap);
+                    }else {
+                        goToClip(bitmap);
+                    }
                 }
             });
         }
@@ -172,13 +177,26 @@ public class CameraActivity extends WQActivity {
         });
     }
 
-    void goToClip(@NonNull Bitmap bitmap){
+    void goToRender(@NonNull Bitmap bitmap){
         Bitmap result = scaleBitmap(bitmap, 500);
         RenderPresenter.setBitmapResource(result);
         Intent mIntent = new Intent();
         mIntent.setClass(this, RenderActivity.class);
         startActivity(mIntent);
         this.finish();
+    }
+
+    void goToComPose(@NonNull Bitmap bitmap){
+        ComposeActivity.setCompImage(bitmap);
+        Intent mIntent = new Intent(this, ComposeActivity.class);
+        mIntent.putExtra("Guid_Path", covers);
+        startActivityForResult(mIntent, ComposeActivity.COMPOSE_RESULT);
+    }
+
+    void goToClip(@NonNull Bitmap bitmap){
+        Bitmap result = scaleBitmap(bitmap, 500);
+        ClipPresenter.setBitmapResource(result);
+        startActivityForResult(new Intent(this, ClipActivity.class), ComposeActivity.COMPOSE_RESULT);
     }
 
 
@@ -199,5 +217,16 @@ public class CameraActivity extends WQActivity {
             return ThumbnailUtils.extractThumbnail(bitmap, mScreentSize[0], mScreentSize[1]);
         }
         return bitmap;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == resultCode && resultCode == ClipActivity.CLIP_RESULT){
+            goToComPose(ClipPresenter.getBitmap());
+            ClipPresenter.setBitmapResource(null);
+        }else if(requestCode == resultCode && resultCode == ComposeActivity.COMPOSE_RESULT && ComposeActivity.getCompImage() != null){
+            goToClip(ComposeActivity.getCompImage());
+        }
     }
 }

@@ -100,6 +100,7 @@ public class SLRFragment extends RenderBaseFragment implements View.OnClickListe
                 if(mResultBitmap != null){
                     getRenderActivity().setBitmapResource(mResultBitmap);
                 }
+                getRenderActivity().invalidate(getRenderActivity().getDstBitmap());
                 getRenderActivity().replaceFragments(new RenderFragment(), getId(), false);
                 break;
         }

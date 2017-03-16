@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/filter_top"
+        android:layout_width="match_parent"
+        android:layout_height="38.5dp"
+        android:background="#AF000000"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <View
+            android:id="@+id/actionback"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/app_close" />
+
+        <TextView
+            android:id="@+id/actiontitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="滤 镜"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <View
+            android:id="@+id/actionsure"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/app_sure" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/filter_compare"
+        android:layout_width="74dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/filter_top"
+        android:layout_margin="25dp"
+        android:background="@drawable/slr_button"
+        android:gravity="center"
+        android:text="对 比"
+        android:textColor="@android:color/white"
+        android:textSize="13sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_alignParentBottom="true"
+        android:background="#AF000000">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/filter_pager"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+</RelativeLayout>

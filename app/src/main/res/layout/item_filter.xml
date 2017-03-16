@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="54dp"
+        android:layout_height="70dp"
+        android:background="@drawable/filter_bottom">
+
+        <ImageView
+            android:id="@+id/filter_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/filter_disc"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:background="#A90A0A0A"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="原图"
+            android:textColor="@android:color/white"
+            android:textSize="11sp" />
+    </RelativeLayout>
+</FrameLayout>

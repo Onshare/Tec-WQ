@@ -61,6 +61,7 @@
         <activity android:name=".frame.camera.CameraActivity" android:screenOrientation="portrait"/>
         <activity android:name=".frame.clip.ClipActivity" android:screenOrientation="portrait"/>
         <activity android:name=".frame.render.RenderActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".frame.compose.ComposeActivity" android:screenOrientation="portrait"/>
 
     </application>
 
