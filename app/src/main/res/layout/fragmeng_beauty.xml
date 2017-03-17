@@ -4,22 +4,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageView
-            android:id="@+id/comp_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
-
-        <ImageView
-            android:id="@+id/comp_comp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="@drawable/comp_bottom"/>
-    </RelativeLayout>
-    <RelativeLayout
+        android:id="@+id/beauty_top"
         android:layout_width="match_parent"
         android:layout_height="38.5dp"
         android:background="#AF000000"
@@ -38,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="合 成"
+            android:text="美 颜"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 
@@ -51,13 +36,32 @@
             android:background="@mipmap/app_sure" />
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/comp_ori"
-        android:layout_width="108dp"
-        android:layout_height="140dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/comp_bottom"
-        android:layout_alignParentBottom="true"
+    <TextView
+        android:id="@+id/beauty_compare"
+        android:layout_width="74dp"
+        android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        android:layout_margin="12dp"/>
+        android:layout_below="@+id/beauty_top"
+        android:layout_margin="25dp"
+        android:background="@drawable/slr_button"
+        android:gravity="center"
+        android:text="对 比"
+        android:textColor="@android:color/white"
+        android:textSize="13sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_alignParentBottom="true"
+        android:background="#AF000000">
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/ui_beauty_bottom"/>
+    </RelativeLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/ui_seekbar"/>
 </RelativeLayout>

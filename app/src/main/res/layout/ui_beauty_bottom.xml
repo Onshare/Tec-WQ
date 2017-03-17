@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:layout_width="54dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/beauty_white_thumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/beauty_bottom"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/beauty_white_disc"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:background="#A90A0A0A"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="美白"
+                android:textColor="@android:color/white"
+                android:textSize="11sp" />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:layout_width="54dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/beauty_smooth_thumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/beauty_bottom"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/beauty_smooth_disc"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:background="#A90A0A0A"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="美肤"
+                android:textColor="@android:color/white"
+                android:textSize="11sp" />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:layout_width="54dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/beauty_pink_thumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/beauty_bottom"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/beauty_pink_disc"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
+                android:background="#A90A0A0A"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="粉嫩"
+                android:textColor="@android:color/white"
+                android:textSize="11sp" />
+        </RelativeLayout>
+    </FrameLayout>
+</LinearLayout>

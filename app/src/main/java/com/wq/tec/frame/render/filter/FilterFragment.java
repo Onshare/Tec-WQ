@@ -83,7 +83,6 @@ public class FilterFragment extends RenderBaseFragment implements View.OnClickLi
                 int width = dstSize[0];
                 int height = dstSize[0] * mFilterBitmap.getHeight() / mFilterBitmap.getWidth();
                 Bitmap bitmap = android.media.ThumbnailUtils.extractThumbnail(mFilterBitmap, width, height);
-                android.util.Log.e("DstList", bitmap.getWidth()+" "+bitmap.getHeight()+" "+mFilterBitmap.getWidth()+" "+mFilterBitmap.getHeight());
                 gpuImage.setImage(bitmap);
                 for(int i = 0; i < mFilterImgs.length; i++){
                     mFilterImgs[i] = getGPUImage(i);
