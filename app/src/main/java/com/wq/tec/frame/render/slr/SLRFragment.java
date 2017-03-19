@@ -94,6 +94,7 @@ public class SLRFragment extends RenderBaseFragment implements View.OnClickListe
     private void action(View view){
         switch (view.getId()){
             case R.id.actionback:
+                getRenderActivity().invalidate(getRenderActivity().getDstBitmap());
                 goRender();
                 break;
             case R.id.actionsure:

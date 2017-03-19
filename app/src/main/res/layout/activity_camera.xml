@@ -91,7 +91,7 @@
                 android:id="@+id/camera_filter"
                 android:layout_width="33dp"
                 android:layout_height="33dp"
-                android:background="@mipmap/camera_filter"
+                android:background="@drawable/camera_filter"
                 android:onClick="doControl" />
 
             <View

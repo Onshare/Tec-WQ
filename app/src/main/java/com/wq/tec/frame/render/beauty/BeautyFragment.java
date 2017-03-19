@@ -13,10 +13,14 @@ import android.widget.SeekBar;
 
 import com.jazz.libs.util.ThreadUtils;
 import com.wq.tec.R;
+import com.wq.tec.filter.ImageBeautyFilter;
+import com.wq.tec.filter.ImageRomanceFilter;
+import com.wq.tec.filter.ImageSkinWhitenFilter;
 import com.wq.tec.frame.render.RenderBaseFragment;
 import com.wq.tec.frame.render.RenderFragment;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
+import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 
 /**
  * Created by N on 2017/3/15.
@@ -35,16 +39,26 @@ public class BeautyFragment extends RenderBaseFragment implements View.OnClickLi
     String[] data = new String[]{
             "美白", "美肤", "粉嫩"
     };
+    GPUImageFilter[] mImageFilter ;
     Bitmap[] mBeautyImgs = new Bitmap[data.length];
+    boolean[] isFilter = new boolean[]{false, false, false};
 
     @Override
     protected void initParams() {
+        mImageFilter = new GPUImageFilter[]{
+                new ImageBeautyFilter(new int[]{getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels})
+                , new ImageSkinWhitenFilter(new int[]{getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels})
+                , new ImageRomanceFilter()
+
+        };
+
         mBeautyBitmap = getRenderActivity().getDstBitmap().copy(Bitmap.Config.ARGB_8888, false);
         gpuImage = new GPUImage(getActivity());
 
         dstSize[0] = (int)(getResources().getDisplayMetrics().density * 54 + 0.5F);
         dstSize[1] = (int)(getResources().getDisplayMetrics().density * 70 + 0.5F);
         getDstList();
+
     }
 
     void getDstList(){
@@ -56,7 +70,18 @@ public class BeautyFragment extends RenderBaseFragment implements View.OnClickLi
                 Bitmap bitmap = android.media.ThumbnailUtils.extractThumbnail(mBeautyBitmap, width, height);
                 gpuImage.setImage(bitmap);
                 for(int i = 0; i < mBeautyImgs.length; i++){
-                    mBeautyImgs[i] = bitmap;
+                    switch (i){
+                        case 1:
+                            gpuImage.setFilter(mImageFilter[0]);
+                            break;
+                        case 2:
+                            gpuImage.setFilter(mImageFilter[1]);
+                            break;
+                        case 3:
+                            gpuImage.setFilter(mImageFilter[2]);
+                            break;
+                    }
+                    mBeautyImgs[i] = gpuImage.getBitmapWithFilterApplied();
                 }
                 invalidateInditor();
             }
@@ -107,14 +132,13 @@ public class BeautyFragment extends RenderBaseFragment implements View.OnClickLi
     private void action(View view){
         switch (view.getId()){
             case R.id.actionback:
+                getRenderActivity().invalidate(getRenderActivity().getDstBitmap());
                 getRenderActivity().replaceFragments(new RenderFragment(), getId(), false);
                 break;
             case R.id.actionsure:
-//                if(mPositionRecord > 0 && mPositionRecord < mFilterImgs.length){
-//                    gpuImage.deleteImage();
-//                    gpuImage.setImage(mFilterBitmap);
-//                    getRenderActivity().setBitmapResource(getGPUImage(mPositionRecord));
-//                }
+                if(mBeautyBitmap != null && mBeautyBitmap.getWidth() > 0 && mBeautyBitmap.getHeight() > 0){
+                    getRenderActivity().setBitmapResource(mBeautyBitmap);
+                }
                 getRenderActivity().invalidate(getRenderActivity().getDstBitmap());
                 getRenderActivity().replaceFragments(new RenderFragment(), getId(), false);
                 break;
@@ -125,12 +149,28 @@ public class BeautyFragment extends RenderBaseFragment implements View.OnClickLi
     private void selectView(View v){
         switch (v.getId()){
             case R.id.beauty_white_thumb:
-                gpuImage.setFilter(new ImgBeautySmoothFilter());
-                getRenderActivity().invalidate(gpuImage.getBitmapWithFilterApplied());
+                if(!isFilter[0]){
+                    isFilter[0] = true;
+                    gpuImage.setImage(mBeautyBitmap);
+                    gpuImage.setFilter(mImageFilter[0]);
+                    getRenderActivity().invalidate(mBeautyBitmap = gpuImage.getBitmapWithFilterApplied());
+                }
                 break;
             case R.id.beauty_smooth_thumb:
+                if(!isFilter[1]){
+                    isFilter[1] = true;
+                    gpuImage.setImage(mBeautyBitmap);
+                    gpuImage.setFilter(mImageFilter[1]);
+                    getRenderActivity().invalidate(mBeautyBitmap = gpuImage.getBitmapWithFilterApplied());
+                }
                 break;
             case R.id.beauty_pink_thumb:
+                if(!isFilter[2]){
+                    isFilter[2] = true;
+                    gpuImage.setImage(mBeautyBitmap);
+                    gpuImage.setFilter(mImageFilter[2]);
+                    getRenderActivity().invalidate(mBeautyBitmap = gpuImage.getBitmapWithFilterApplied());
+                }
                 break;
         }
         imgs[0].setSelected(R.id.beauty_white_thumb == v.getId());

@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jazz.libs.ImageLoader.ImageManager;
 import com.jazz.libs.termination.TerminationTask;
@@ -19,6 +20,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.wq.tec.R;
 import com.wq.tec.WQActivity;
+import com.wq.tec.filter.ImageBeautyFilter;
 import com.wq.tec.frame.clip.ClipActivity;
 import com.wq.tec.frame.clip.ClipPresenter;
 import com.wq.tec.frame.compose.ComposeActivity;
@@ -28,6 +30,8 @@ import com.wq.tec.frame.render.RenderPresenter;
 import com.wq.tec.tech.camera.CameraController;
 import com.wq.tec.tech.camera.CameraLoader;
 import com.wq.tec.util.FileCacheUtil;
+
+import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 
 
 /**
@@ -52,9 +56,12 @@ public class CameraActivity extends WQActivity {
     private String[] covers = new String[3];//极限智拍有背景
     private int mCoverModel = -1;
 
+    private GPUImageFilter mFilter ;
+
     @Override
     protected void onCreateActivity(Bundle savedInstanceState) {
         setContentView(R.layout.activity_camera);
+        mFilter = new ImageBeautyFilter(new int[]{getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels});
         addCameraFrame();
         mCameraShow = (ImageView) findViewById(R.id.camera_show);
         mCameraCover = (ImageView) findViewById(R.id.camera_cover);
@@ -106,7 +113,15 @@ public class CameraActivity extends WQActivity {
 
     public void doControl(View v){
         if(R.id.camera_filter == v.getId()){
-
+            v.setSelected(!v.isSelected());
+            if(v.isSelected()){
+                CameraController.setFrameFilter(new ImageBeautyFilter(new int[]{11, 19}));
+                Toast.makeText(this, "关闭滤镜", Toast.LENGTH_SHORT).show();
+            }else{
+                CameraController.setFrameFilter(mFilter);
+                ((ImageBeautyFilter)mFilter).setBeautyLevel(5);
+                Toast.makeText(this, "打开滤镜", Toast.LENGTH_SHORT).show();
+            }
         }else if(R.id.camera_guid == v.getId()){
             startActivity(new Intent(this, GuidActivity.class));
             this.finish();
@@ -153,6 +168,7 @@ public class CameraActivity extends WQActivity {
     protected void onResume() {
         super.onResume();
         setMode(mCoverModel);
+        CameraController.setFrameFilter(mFilter);
         mCursorLoadPic();
     }
 

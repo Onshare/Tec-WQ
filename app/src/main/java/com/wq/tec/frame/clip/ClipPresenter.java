@@ -24,7 +24,7 @@ public class ClipPresenter extends BasePresent<ClipActivity> {
     private Paint mPaint = new Paint();
 
     public static void setBitmapResource(Bitmap bitmap){
-        ClipPresenter.bitmap = bitmap;
+        ClipPresenter.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
     }
 
     public static Bitmap getBitmap() {

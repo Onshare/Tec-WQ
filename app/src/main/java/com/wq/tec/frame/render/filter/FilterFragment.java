@@ -192,6 +192,7 @@ public class FilterFragment extends RenderBaseFragment implements View.OnClickLi
     private void action(View view){
         switch (view.getId()){
             case R.id.actionback:
+                getRenderActivity().invalidate(getRenderActivity().getDstBitmap());
                 getRenderActivity().replaceFragments(new RenderFragment(), getId(), false);
                 break;
             case R.id.actionsure:
