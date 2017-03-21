@@ -28,8 +28,6 @@ import java.io.IOException;
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageGaussianBlurFilter;
 
-import static com.jazz.libs.server.Net.context;
-
 /**
  * Created by N on 2017/3/21.
  */
@@ -138,10 +136,10 @@ public class SaveActivity extends WQActivity implements View.OnClickListener{
             File mFile = new File(FileCacheUtil.getSaveURL());
             if(mFile.exists()){
                 try {
-                    MediaStore.Images.Media.insertImage(context.getContentResolver(), FileCacheUtil.getSaveURL(), FileCacheUtil.getSaveName(), "握趣印象");
+                    MediaStore.Images.Media.insertImage(getContentResolver(), FileCacheUtil.getSaveURL(), FileCacheUtil.getSaveName(), "握趣印象");
                 } catch (FileNotFoundException e) {
                 }
-                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + FileCacheUtil.getSaveURL())));
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + FileCacheUtil.getSaveURL())));
             }
             return "保存成功";
         }
