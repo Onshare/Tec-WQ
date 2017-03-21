@@ -24,7 +24,9 @@ public class ClipPresenter extends BasePresent<ClipActivity> {
     private Paint mPaint = new Paint();
 
     public static void setBitmapResource(Bitmap bitmap){
-        ClipPresenter.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+        if(bitmap != null && !bitmap.isRecycled()){
+            ClipPresenter.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+        }
     }
 
     public static Bitmap getBitmap() {
@@ -70,6 +72,5 @@ public class ClipPresenter extends BasePresent<ClipActivity> {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bitmap = null;
     }
 }

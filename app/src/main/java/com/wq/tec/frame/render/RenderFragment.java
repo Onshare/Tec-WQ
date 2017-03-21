@@ -1,5 +1,6 @@
 package com.wq.tec.frame.render;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import com.wq.tec.frame.render.cut.CutFrgment;
 import com.wq.tec.frame.render.filter.FilterFragment;
 import com.wq.tec.frame.render.lbeauty.LBeautyFragment;
 import com.wq.tec.frame.render.slr.SLRFragment;
+import com.wq.tec.frame.save.SaveActivity;
 
 /**
  * Created by N on 2017/3/15.
@@ -73,7 +75,10 @@ public class RenderFragment extends RenderBaseFragment implements View.OnClickLi
             case R.id.actionback:
                 this.getActivity().finish();
                 break;
-            case R.id.actionsure_text://todo 保存图像
+            case R.id.actionsure_text://
+                SaveActivity.setBitmapResource(getRenderActivity().getDstBitmap());
+                startActivity(new Intent(getActivity(), SaveActivity.class));
+                getRenderActivity().finish();
                 break;
         }
     }

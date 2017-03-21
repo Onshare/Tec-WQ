@@ -3,6 +3,8 @@ package com.wq.tec.frame.home;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -20,11 +22,14 @@ import com.wq.tec.R;
 import com.wq.tec.WQActivity;
 import com.wq.tec.frame.camera.CameraActivity;
 import com.wq.tec.frame.guid.GuidActivity;
+import com.wq.tec.frame.render.RenderActivity;
+import com.wq.tec.frame.render.RenderPresenter;
 import com.wq.tec.frame.web.WebAcitivity;
 import com.wq.tec.open.gallery.FancyCoverFlow;
 import com.wq.tec.open.gallery.FancyCoverFlowAdapter;
 import com.wq.tec.util.FileCacheUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +60,7 @@ public class HomeActivity extends WQActivity implements View.OnClickListener{
         mHomePlay.setOnClickListener(this);
         mHomeCamera.setOnClickListener(this);
         mHomePay.setOnClickListener(this);
+        mHomeShow.setOnClickListener(this);
     }
 
     List<String> getPagerShowImage(){
@@ -77,6 +83,8 @@ public class HomeActivity extends WQActivity implements View.OnClickListener{
             Intent mIntent = new Intent(this, WebAcitivity.class);
             mIntent.putExtra("webUrl", "https://www.tmall.com/");
             startActivity(mIntent);
+        } else if(R.id.home_show == resId){
+            goPicture(this);
         }
     }
 
@@ -147,5 +155,26 @@ public class HomeActivity extends WQActivity implements View.OnClickListener{
                 ImageManager.get().displayImage("file://"+imgPath, mHomeShow);
             }
         });
+    }
+
+    public static void goPicture(@NonNull android.app.Activity context){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        context.startActivityForResult(intent, 10001);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 10001 && data != null && data.getData() != null){
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                RenderPresenter.setBitmapResource(bitmap);
+                Intent mIntent = new Intent();
+                mIntent.setClass(this, RenderActivity.class);
+                startActivity(mIntent);
+            } catch (IOException e) {
+            }
+        }
     }
 }

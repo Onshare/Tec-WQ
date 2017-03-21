@@ -34,7 +34,7 @@ import jp.co.cyberagent.android.gpuimage.GPUImageGaussianBlurFilter;
  * Created by N on 2017/3/6.
  */
 
-public class ClipActivity extends WQActivity<ClipPresenter>{//// TODO: 2017/3/14  还差移动视图
+public class ClipActivity extends WQActivity<ClipPresenter>{
 
     public static final int CLIP_RESULT = 1002;
 
@@ -84,6 +84,7 @@ public class ClipActivity extends WQActivity<ClipPresenter>{//// TODO: 2017/3/14
 
                         ClipPresenter.setBitmapResource(overyLay);
                         setResult(CLIP_RESULT);
+                        result.recycle();
                         ClipActivity.this.finish();
                     }
                     mClipImage.reSet();

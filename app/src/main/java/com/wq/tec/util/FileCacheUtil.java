@@ -21,6 +21,8 @@ public final class FileCacheUtil {
 
     private static final String URL_PATH = Environment.getExternalStorageDirectory().getPath() + "/" + ".WQ/";
 
+    public static final String WQ_SAVE_NAME = "WQ_SAVE_RESULT";
+
     public static String getCachePath(){
         return URL_PATH;
     }
@@ -38,6 +40,14 @@ public final class FileCacheUtil {
             return mFile.exists();
         }
         return false;
+    }
+
+    public static String getSaveName() {
+        return WQ_SAVE_NAME;
+    }
+
+    public static String getSaveURL(){
+        return URL_PATH + WQ_SAVE_NAME + ".png";
     }
 
     public static boolean clearCache(){

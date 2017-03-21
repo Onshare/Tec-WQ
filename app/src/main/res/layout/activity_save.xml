@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.wq.tec.open.BlackGroundView
+        android:id="@+id/save_bk"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <include
+        layout="@layout/ui_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="38.5dp" />
+
+    <com.wq.tec.open.round.RoundedImageView
+        android:id="@+id/save_icon"
+        android:layout_width="81dp"
+        android:layout_height="81dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="123.5dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/save_stat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/save_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:maxLines="1"
+        android:text="已保存"
+        android:textColor="@android:color/white"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/save_gocamera"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/save_stat"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp"
+        android:background="@drawable/save_buttom"
+        android:gravity="center"
+        android:text="继续拍照"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/save_gonext"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/save_gocamera"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/save_buttom"
+        android:gravity="center"
+        android:text="美化下一张"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
+</RelativeLayout>

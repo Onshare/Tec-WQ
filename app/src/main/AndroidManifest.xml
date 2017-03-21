@@ -62,6 +62,7 @@
         <activity android:name=".frame.clip.ClipActivity" android:screenOrientation="portrait"/>
         <activity android:name=".frame.render.RenderActivity" android:screenOrientation="portrait"/>
         <activity android:name=".frame.compose.ComposeActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".frame.save.SaveActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
 
     </application>
 
