@@ -137,9 +137,14 @@ public class CameraFrame extends BaseFragment{
         mHandler.sendEmptyMessageDelayed(1, 4000);
     }
 
-    void showResult(@NonNull Bitmap bitmap){
-        this.mShowResultView.setVisibility(View.VISIBLE);
-        this.mShowResultView.setImageBitmap(bitmap);
+    void showResult(Bitmap bitmap){
+        if(bitmap != null){
+            this.mShowResultView.setVisibility(View.VISIBLE);
+            this.mShowResultView.setImageBitmap(bitmap);
+
+        }else{
+            this.mShowResultView.setVisibility(View.GONE);
+        }
     }
 
 }

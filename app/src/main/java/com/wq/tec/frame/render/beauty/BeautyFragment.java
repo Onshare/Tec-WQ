@@ -137,7 +137,13 @@ public class BeautyFragment extends RenderBaseFragment implements View.OnClickLi
                 break;
             case R.id.actionsure:
                 if(mBeautyBitmap != null && mBeautyBitmap.getWidth() > 0 && mBeautyBitmap.getHeight() > 0){
-                    getRenderActivity().setBitmapResource(mBeautyBitmap);
+                    gpuImage.setImage(mBeautyBitmap);
+                    for(int index = 0; index < isFilter.length; index++){
+                        if(isFilter[index]){
+                            gpuImage.setFilter(mImageFilter[index]);
+                        }
+                    }
+                    getRenderActivity().setBitmapResource(gpuImage.getBitmapWithFilterApplied());
                 }
                 getRenderActivity().invalidate(getRenderActivity().getDstBitmap());
                 getRenderActivity().replaceFragments(new RenderFragment(), getId(), false);
@@ -151,25 +157,31 @@ public class BeautyFragment extends RenderBaseFragment implements View.OnClickLi
             case R.id.beauty_white_thumb:
                 if(!isFilter[0]){
                     isFilter[0] = true;
+                    isFilter[1] = false;
+                    isFilter[2] = false;
                     gpuImage.setImage(mBeautyBitmap);
                     gpuImage.setFilter(mImageFilter[0]);
-                    getRenderActivity().invalidate(mBeautyBitmap = gpuImage.getBitmapWithFilterApplied());
+                    getRenderActivity().invalidate(gpuImage.getBitmapWithFilterApplied());
                 }
                 break;
             case R.id.beauty_smooth_thumb:
                 if(!isFilter[1]){
+                    isFilter[0] = false;
                     isFilter[1] = true;
+                    isFilter[2] = false;
                     gpuImage.setImage(mBeautyBitmap);
                     gpuImage.setFilter(mImageFilter[1]);
-                    getRenderActivity().invalidate(mBeautyBitmap = gpuImage.getBitmapWithFilterApplied());
+                    getRenderActivity().invalidate(gpuImage.getBitmapWithFilterApplied());
                 }
                 break;
             case R.id.beauty_pink_thumb:
                 if(!isFilter[2]){
+                    isFilter[0] = false;
+                    isFilter[1] = false;
                     isFilter[2] = true;
                     gpuImage.setImage(mBeautyBitmap);
                     gpuImage.setFilter(mImageFilter[2]);
-                    getRenderActivity().invalidate(mBeautyBitmap = gpuImage.getBitmapWithFilterApplied());
+                    getRenderActivity().invalidate(gpuImage.getBitmapWithFilterApplied());
                 }
                 break;
         }
@@ -186,9 +198,13 @@ public class BeautyFragment extends RenderBaseFragment implements View.OnClickLi
                 getRenderActivity().invalidate(getRenderActivity().getDstBitmap());
             }else if(event.getAction() == MotionEvent.ACTION_CANCEL
                     || event.getAction() == MotionEvent.ACTION_UP){
-//                gpuImage.deleteImage();
-//                gpuImage.setImage(mBeautyBitmap);
-                getRenderActivity().invalidate(mBeautyBitmap);
+                gpuImage.setImage(mBeautyBitmap);
+                for(int index = 0; index < isFilter.length; index++){
+                    if(isFilter[index]){
+                        gpuImage.setFilter(mImageFilter[index]);
+                    }
+                }
+                getRenderActivity().invalidate(gpuImage.getBitmapWithFilterApplied());
             }
             return true;
         }

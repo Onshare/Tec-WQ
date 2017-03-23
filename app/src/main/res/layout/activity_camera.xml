@@ -67,7 +67,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#4d4d4d"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:onClick="doControl"/>
         </FrameLayout>
 
         <View
@@ -100,7 +101,8 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
                 android:background="@mipmap/camera_guid"
-                android:onClick="doControl" />
+                android:onClick="doControl"
+                android:visibility="gone"/>
         </LinearLayout>
     </RelativeLayout>
 

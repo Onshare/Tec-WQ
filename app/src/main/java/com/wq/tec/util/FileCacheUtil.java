@@ -68,7 +68,7 @@ public final class FileCacheUtil {
                     List<String> mediaPath = new ArrayList<>();
                     while (mCursor.moveToNext()) {
                         String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                        if (path != null && path.contains(sdcardPath + "/DCIM/")) {
+                        if (path != null && (path.contains(sdcardPath + "/DCIM/") || path.contains("/Pictures/"))) {
                             mediaPath.add(path);
                         }
                     }

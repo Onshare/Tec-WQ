@@ -68,7 +68,7 @@ public class FilterFragment extends RenderBaseFragment implements View.OnClickLi
     protected void initParams() {
         gpuImage = new GPUImage(getActivity());
         mFilterBitmap = getRenderActivity().getDstBitmap().copy(Bitmap.Config.ARGB_8888, false);
-        gpuImage.setImage(getRenderActivity().getDstBitmap());
+        gpuImage.setImage(mFilterBitmap);
 
         dstSize[0] = (int)(getResources().getDisplayMetrics().density * 54 + 0.5F);
         dstSize[1] = (int)(getResources().getDisplayMetrics().density * 70 + 0.5F);
@@ -216,8 +216,11 @@ public class FilterFragment extends RenderBaseFragment implements View.OnClickLi
         if(gpuImage != null){
             gpuImage.deleteImage();
         }
-        for(int i = 0; i < mFilterImgs.length && mFilterImgs[i] != null && !mFilterImgs[i].isRecycled(); i++){
-            mFilterImgs[i].recycle();
+        for(int i = 0; i < mFilterImgs.length; i++){
+            if(mFilterImgs[i] != null
+                    && mFilterImgs[i] != getRenderActivity().getDstBitmap() && !mFilterImgs[i].isRecycled()){
+                mFilterImgs[i].recycle();
+            }
         }
         if(mFilterBitmap != null && !mFilterBitmap.isRecycled()){//todo 待测试
             mFilterBitmap.recycle();

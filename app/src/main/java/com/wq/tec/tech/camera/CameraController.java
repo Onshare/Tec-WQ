@@ -27,6 +27,12 @@ public final class CameraController {
         }
     }
 
+    public static void startCamera(){
+        if(CameraController.mLoader != null){
+            CameraController.mLoader.startCamera();
+        }
+    }
+
     public static void stopCamera(){
         if(CameraController.mLoader != null){
             CameraController.mLoader.stopCamera();

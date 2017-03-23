@@ -5,7 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 
 import com.jazz.libs.ImageLoader.ImageManager;
 import com.jazz.libs.termination.TerminationTask;
+import com.jazz.libs.util.BitmapUtil;
 import com.jazz.libs.util.ThreadUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -27,9 +31,14 @@ import com.wq.tec.frame.compose.ComposeActivity;
 import com.wq.tec.frame.guid.GuidActivity;
 import com.wq.tec.frame.render.RenderActivity;
 import com.wq.tec.frame.render.RenderPresenter;
+import com.wq.tec.frame.save.SaveActivity;
 import com.wq.tec.tech.camera.CameraController;
 import com.wq.tec.tech.camera.CameraLoader;
 import com.wq.tec.util.FileCacheUtil;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 
@@ -101,11 +110,7 @@ public class CameraActivity extends WQActivity {
                 @Override
                 public void takePic(@NonNull Bitmap bitmap) {
                     mCameraShow.setImageBitmap(bitmap);
-                    if(TextUtils.isEmpty(covers[2])){
-                        goToRender(bitmap);
-                    }else {
-                        goToClip(bitmap);
-                    }
+                    new SaveTask().execute(bitmap);
                 }
             });
         }
@@ -119,12 +124,13 @@ public class CameraActivity extends WQActivity {
                 Toast.makeText(this, "关闭滤镜", Toast.LENGTH_SHORT).show();
             }else{
                 CameraController.setFrameFilter(mFilter);
-                ((ImageBeautyFilter)mFilter).setBeautyLevel(5);
                 Toast.makeText(this, "打开滤镜", Toast.LENGTH_SHORT).show();
             }
         }else if(R.id.camera_guid == v.getId()){
             startActivity(new Intent(this, GuidActivity.class));
             this.finish();
+        }else if(R.id.camera_show == v.getId()){
+            goPicture(this);
         }
     }
 
@@ -168,7 +174,12 @@ public class CameraActivity extends WQActivity {
     protected void onResume() {
         super.onResume();
         setMode(mCoverModel);
-        CameraController.setFrameFilter(mFilter);
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                CameraController.setFrameFilter(mFilter);
+            }
+        }, 1000);
         mCursorLoadPic();
     }
 
@@ -221,28 +232,58 @@ public class CameraActivity extends WQActivity {
         double be = (double) length / scaleSize;
         if(be > 1){
             int[] mScreentSize = new int[]{getResources().getDisplayMetrics().widthPixels / 2, getResources().getDisplayMetrics().heightPixels / 2};
-//            BitmapFactory.Options options = new BitmapFactory.Options();
-//            be = mScreentSize[0] / bitmap.getWidth() > mScreentSize[1] / bitmap.getHeight() ? (double) mScreentSize[0] / bitmap.getWidth() : (double) mScreentSize[1] / bitmap.getHeight();
-//            options.inSampleSize = (int) (be - (int)be > 0.5 ? be + 1 : be);
-//            options.inSampleSize = options.inSampleSize == 1 ? options.inSampleSize + 1 : options.inSampleSize;
-//            ByteArrayOutputStream bops = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bops);
-//            byte[] data = bops.toByteArray();
-//            log("inscampleSize =  "+options.inSampleSize+" be = "+be);
-//            return BitmapFactory.decodeByteArray(data, 0, data.length, options);
             return ThumbnailUtils.extractThumbnail(bitmap, mScreentSize[0], mScreentSize[1]);
         }
         return bitmap;
     }
 
+    public static void goPicture(@NonNull android.app.Activity context){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        context.startActivityForResult(intent, 10001);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == resultCode && resultCode == ClipActivity.CLIP_RESULT){
+        if(requestCode == 10001 && data != null && data.getData() != null){
+            try {
+                goToRender(MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()));
+            } catch (IOException e) {
+            }
+        }else if(requestCode == resultCode && resultCode == ClipActivity.CLIP_RESULT){
             goToComPose(ClipPresenter.getBitmap());
             ClipPresenter.setBitmapResource(null);
         }else if(requestCode == resultCode && resultCode == ComposeActivity.COMPOSE_RESULT && ComposeActivity.getCompImage() != null){
             goToRender(ComposeActivity.getCompImage());
+        }
+    }
+
+    class SaveTask extends AsyncTask<Bitmap, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(Bitmap... params) {
+            String urlPath = FileCacheUtil.getCachePath()+"WQ_CAMERA.png";
+            BitmapUtil.saveToFile(params[0], urlPath);
+            File mFile = new File(urlPath);
+            if(mFile.exists()){
+                try {
+                    MediaStore.Images.Media.insertImage(getContentResolver(), urlPath, "WQ_CAMERA.png", "握趣印象");
+                } catch (FileNotFoundException e) {
+                }
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + urlPath)));
+            }
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            if(!TextUtils.isEmpty(covers[2])){
+                goToClip(bitmap);
+            } else {
+                CameraController.startCamera();
+            }
         }
     }
 }

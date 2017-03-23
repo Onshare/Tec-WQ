@@ -49,6 +49,11 @@ public class CameraLoader {
         mCameraHelper.release();
     }
 
+    void startCamera(){
+        switchCamera(mCameraHelper.getCamerId());
+        mFrame.showResult(null);
+    }
+
     void takePic(final TakePicCallBack takePicCallBack){
         if(!mCameraHelper.isInit()){
             return ;

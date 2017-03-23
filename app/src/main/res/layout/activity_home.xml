@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:singleLine="true"
-            android:text="极限智拍"
+            android:text="趣拍"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
