@@ -120,6 +120,7 @@ public class HomeActivity extends WQActivity implements View.OnClickListener{
                 reusableView = mInflater.inflate(R.layout.item_home, null);
             }
             ImageView mHomeImage = (ImageView) reusableView.findViewById(R.id.home_img);
+            mHomeImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             mHomeImage.setImageResource(resource[position]);
             reusableView.setLayoutParams(new FancyCoverFlow.LayoutParams(imgSize[0], imgSize[1]));
             return reusableView;
