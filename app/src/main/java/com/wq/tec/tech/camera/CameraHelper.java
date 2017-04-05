@@ -47,6 +47,8 @@ public class CameraHelper implements CameraInterface{
     private GPUImage gpu;
     private GPUImageFilter mFilter;
 
+    private Camera.Size[] mSize = new Camera.Size[2];
+
     @Override
     public void release(){
         if(mCamera != null){
@@ -91,14 +93,14 @@ public class CameraHelper implements CameraInterface{
             mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
         List<Camera.Size> mPreViewSizeList = mParameters.getSupportedPreviewSizes();
-        Camera.Size mPreViewSize = getFixedCameraSize(mPreViewSizeList);
-        mParameters.setPreviewSize(mPreViewSize.width, mPreViewSize.height);
-        android.util.Log.e("camera preview size :", mPreViewSize.width + " x " + mPreViewSize.height);
+        mSize[0] = getFixedCameraSize(mPreViewSizeList);
+        mParameters.setPreviewSize(mSize[0].width, mSize[0].height);
+        android.util.Log.e("camera preview size :", mSize[0].width + " x " + mSize[0].height);
 
         List<Camera.Size> mPicSizeList = mParameters.getSupportedPictureSizes();
-        Camera.Size mPicSize = getFixedCameraSize(mPicSizeList);
-        mParameters.setPictureSize(mPicSize.width, mPicSize.height);
-        android.util.Log.e("camera pic size :", mPicSize.width + " x " + mPicSize.height);
+        mSize[1] = getFixedCameraSize(mPicSizeList);
+        mParameters.setPictureSize(mSize[1].width, mSize[1].height);
+        android.util.Log.e("camera pic size :", mSize[1].width + " x " + mSize[1].height);
         mParameters.setJpegQuality(100);
         mCamera.setParameters(mParameters);
         return isInit = true;
@@ -174,7 +176,7 @@ public class CameraHelper implements CameraInterface{
     public void setFilter(@NonNull CameraFilter mFilter){
         switch (mFilter){
             case WITHEN:
-                this.mFilter = new ImageSkinWhitenFilter(mFilter.getLevel() == 0 ? new int[]{11, 19} : mScreenSize);
+                this.mFilter = new ImageSkinWhitenFilter(mFilter.getLevel() == 0 ? new int[]{mSize[0].height / 100, mSize[0].width / 100} : new int[]{mSize[0].height, mSize[0].width});
                 break;
             default:
                 this.mFilter = null;
