@@ -33,6 +33,7 @@ import com.wq.tec.frame.render.RenderActivity;
 import com.wq.tec.frame.render.RenderPresenter;
 import com.wq.tec.frame.save.SaveActivity;
 import com.wq.tec.tech.camera.CameraController;
+import com.wq.tec.tech.camera.CameraFilter;
 import com.wq.tec.tech.camera.CameraLoader;
 import com.wq.tec.util.FileCacheUtil;
 
@@ -65,12 +66,11 @@ public class CameraActivity extends WQActivity {
     private String[] covers = new String[3];//极限智拍有背景
     private int mCoverModel = -1;
 
-    private GPUImageFilter mFilter ;
+    private CameraFilter mFilter = CameraFilter.WITHEN ;
 
     @Override
     protected void onCreateActivity(Bundle savedInstanceState) {
         setContentView(R.layout.activity_camera);
-        mFilter = new ImageBeautyFilter(new int[]{getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels});
         addCameraFrame();
         mCameraShow = (ImageView) findViewById(R.id.camera_show);
         mCameraCover = (ImageView) findViewById(R.id.camera_cover);
@@ -120,10 +120,10 @@ public class CameraActivity extends WQActivity {
         if(R.id.camera_filter == v.getId()){
             v.setSelected(!v.isSelected());
             if(v.isSelected()){
-                CameraController.setFrameFilter(new ImageBeautyFilter(new int[]{11, 19}));
+                CameraController.setFrameFilter(mFilter.setLevel(0));
                 Toast.makeText(this, "关闭滤镜", Toast.LENGTH_SHORT).show();
             }else{
-                CameraController.setFrameFilter(mFilter);
+                CameraController.setFrameFilter(mFilter.setLevel(1));
                 Toast.makeText(this, "打开滤镜", Toast.LENGTH_SHORT).show();
             }
         }else if(R.id.camera_guid == v.getId()){
@@ -177,7 +177,7 @@ public class CameraActivity extends WQActivity {
         new android.os.Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                CameraController.setFrameFilter(mFilter);
+                CameraController.setFrameFilter(mFilter.setLevel(1));
             }
         }, 1000);
         mCursorLoadPic();

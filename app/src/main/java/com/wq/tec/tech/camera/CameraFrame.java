@@ -33,7 +33,7 @@ public class CameraFrame extends BaseFragment{
     private ImageView mShowResultView;
 
     private CameraLoader mLoader;
-    private CameraHelper mHelper ;
+    private CameraInterface mHelper ;
 
     private final Handler mHandler = new Handler(){
         @Override
@@ -47,7 +47,13 @@ public class CameraFrame extends BaseFragment{
 
     @Override
     protected void initParams() {
-        mHelper = new CameraHelper(getContext());
+        Bundle mBundler = getArguments();
+        if(mBundler != null && mBundler.getString("").equals("Magicc")){
+
+        } else {
+            mHelper = new CameraHelper(getContext());
+        }
+
         mLoader = new CameraLoader(this, mHelper);
     }
 

@@ -1,17 +1,29 @@
 package com.wq.tec.tech.camera;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.hardware.Camera;
+import android.opengl.GLSurfaceView;
 import android.support.annotation.NonNull;
+import android.view.Surface;
+
+import com.wq.tec.filter.ImageSkinWhitenFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.co.cyberagent.android.gpuimage.GPUImage;
+import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
+
+import static com.wq.tec.tech.camera.CameraController.stopCamera;
+
 /**
  * Created by N on 2017/2/5.
  */
-public class CameraHelper {
+public class CameraHelper implements CameraInterface{
 
     private int[] mScreenSize = new int[2];
 
@@ -19,6 +31,7 @@ public class CameraHelper {
         mScreenSize[0] = mContext.getResources().getDisplayMetrics().widthPixels;
         mScreenSize[1] = mContext.getResources().getDisplayMetrics().heightPixels;
         mCamerId = Camera.CameraInfo.CAMERA_FACING_BACK;
+        gpu = new GPUImage(mContext);
     }
 
     public static class CameraInfo{
@@ -31,7 +44,11 @@ public class CameraHelper {
 
     private boolean isInit = false;
 
-    void release(){
+    private GPUImage gpu;
+    private GPUImageFilter mFilter;
+
+    @Override
+    public void release(){
         if(mCamera != null){
             mCamera.stopPreview();
             mCamera.setPreviewCallback(null);
@@ -39,18 +56,27 @@ public class CameraHelper {
             mCamera = null;
             isInit = false;
             mCamerId = Camera.CameraInfo.CAMERA_FACING_BACK;
+            mFilter = null;
         }
     }
 
-    boolean isInit(){
+    @Override
+    public void relativeGL(@NonNull GLSurfaceView mView){
+        gpu.setGLSurfaceView(mView);
+    }
+
+    @Override
+    public boolean isInit(){
         return isInit;
     }
 
-    boolean openCamera(){
+    @Override
+    public boolean openCamera(){
         return openCamera(mCamerId);
     }
 
-    boolean openCamera(int cameraId){
+    @Override
+    public boolean openCamera(int cameraId){
         release();
         if(mCamera == null){
             try {
@@ -78,8 +104,42 @@ public class CameraHelper {
         return isInit = true;
     }
 
+    @Override
+    public void showCameraPreView(@NonNull Activity mActivity){
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(getCameraId(), info);
 
-    Camera.Size getFixedCameraSize(@NonNull List<Camera.Size> mSize){
+        int degrees = getDisPlayRotation(mActivity);
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+        } else { // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        gpu.setUpCamera(getCamera(), result, info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT, false);
+    }
+
+    private int getDisPlayRotation(@NonNull Activity mActivity){
+        int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+        return degrees;
+    }
+
+    private Camera.Size getFixedCameraSize(@NonNull List<Camera.Size> mSize){
         double beRatio = (double)mScreenSize[0] / mScreenSize[1];
         double[] result = new double[mSize.size()];
         for(int i = 0; i < mSize.size(); i++){
@@ -100,15 +160,34 @@ public class CameraHelper {
         return mSize.get(index);
     }
 
-    Camera getCamera(){
+    @Override
+    public  Camera getCamera(){
         return mCamera;
     }
 
-    int getCamerId() {
+    @Override
+    public int getCameraId() {
         return mCamerId;
     }
 
-    void switchFocusMode(@NonNull String mode){
+    @Override
+    public void setFilter(@NonNull CameraFilter mFilter){
+        switch (mFilter){
+            case WITHEN:
+                this.mFilter = new ImageSkinWhitenFilter(mFilter.getLevel() == 0 ? new int[]{11, 19} : mScreenSize);
+                break;
+            default:
+                this.mFilter = null;
+                break;
+        }
+        try {
+            gpu.setFilter(this.mFilter);
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public void switchFocusMode(@NonNull String mode){
         Camera.Parameters mParameters =  mCamera.getParameters();
         if(isInit && mParameters.getSupportedFocusModes().contains(mode)){
             mCamera.cancelAutoFocus();
@@ -121,7 +200,8 @@ public class CameraHelper {
         mCamera.cancelAutoFocus();
     }
 
-    void focus(Rect rect, Camera.AutoFocusCallback callback){
+    @Override
+    public void focus(Rect rect, CameraFocusCallBack mFocusCallBack){
         try {
             mCamera.cancelAutoFocus();
             Camera.Parameters mParameters =  mCamera.getParameters();
@@ -132,12 +212,13 @@ public class CameraHelper {
                 mParameters.setFocusAreas(focusAreas);
             }
             mCamera.setParameters(mParameters);
-            mCamera.autoFocus(callback);
+            mCamera.autoFocus(null);
         } catch (Exception e) {
         }
     }
 
-    double zoom(int level, int max){
+    @Override
+    public double zoom(int level, int max){
         Camera.Parameters mParameters = mCamera.getParameters();
         if(mParameters.isZoomSupported()){
             int maxZoomLevel = mParameters.getMaxZoom();
@@ -157,14 +238,16 @@ public class CameraHelper {
         return 0;
     }
 
-    void takePicture(Camera.PictureCallback jpegCallBack){
+    @Override
+    public void takePicture(CameraInterface.CameraTakePictureCallBack takePictureCallBack){
         Camera.Parameters mParameters = mCamera.getParameters();
         mParameters.setRotation(mCamerId == Camera.CameraInfo.CAMERA_FACING_BACK ? 90 : 90);
         mCamera.setParameters(mParameters);
-        mCamera.takePicture(null, null, jpegCallBack);
+        mCamera.takePicture(null, null, new OriTakePic(takePictureCallBack));
     }
 
-    void takeFlash(boolean isOpen){
+    @Override
+    public void takeFlash(boolean isOpen){
         try {
             Camera.Parameters mParameters = mCamera.getParameters();
             mParameters.setFlashMode(isOpen ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
@@ -172,4 +255,28 @@ public class CameraHelper {
         } catch (Exception e) {
         }
     }
+
+    private class  OriTakePic implements Camera.PictureCallback {
+
+        CameraInterface.CameraTakePictureCallBack cameraTakePictureCallBack;
+
+        OriTakePic(CameraInterface.CameraTakePictureCallBack cameraTakePictureCallBack){
+            this.cameraTakePictureCallBack = cameraTakePictureCallBack;
+        }
+
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            try {
+                Bitmap result = BitmapFactory.decodeByteArray(data, 0, data.length);
+                if(cameraTakePictureCallBack != null && result != null){
+                    cameraTakePictureCallBack.readyCreateBitmap();
+                    result = gpu.getBitmapWithFilterApplied(result);
+                    stopCamera();
+                    cameraTakePictureCallBack.getCameraPicture(result);
+                }
+            } catch (Exception e) {
+                System.gc();
+            }
+        }
+    };
 }

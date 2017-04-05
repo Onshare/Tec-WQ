@@ -1,5 +1,6 @@
 package com.wq.tec.tech.camera;
 
+import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
@@ -39,7 +40,7 @@ public final class CameraController {
         }
     }
 
-    public static void setFrameFilter(GPUImageFilter mFilter){
+    public static void setFrameFilter(CameraFilter mFilter){
         if(CameraController.mLoader != null){
             CameraController.mLoader.setFilter(mFilter);
         }

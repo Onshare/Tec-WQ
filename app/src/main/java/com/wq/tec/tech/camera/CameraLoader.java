@@ -22,26 +22,22 @@ import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
  */
 public class CameraLoader {
 
-    private CameraHelper mCameraHelper ;
+    private CameraInterface mCameraHelper ;
     private CameraFrame mFrame;
-
-    private GPUImage gpu;
-    private GPUImageFilter mFilter;
     private GLSurfaceView mView;
 
-    CameraLoader(@NonNull CameraFrame frame, @NonNull CameraHelper helper){
+    CameraLoader(@NonNull CameraFrame frame, @NonNull CameraInterface helper){
         this.mCameraHelper = helper;
-        gpu = new GPUImage(frame.getActivity());
         mFrame = frame;
     }
 
     void relativeGL(@NonNull GLSurfaceView mView){
-        gpu.setGLSurfaceView(CameraLoader.this.mView = mView);
+        mCameraHelper.relativeGL(CameraLoader.this.mView = mView);
     }
 
     void onResume(){
         if(mCameraHelper.openCamera(Camera.CameraInfo.CAMERA_FACING_BACK)){
-            showCameraPreView(Camera.CameraInfo.CAMERA_FACING_BACK);
+            showCameraPreView();
         }
     }
 
@@ -50,7 +46,7 @@ public class CameraLoader {
     }
 
     void startCamera(){
-        switchCamera(mCameraHelper.getCamerId());
+        switchCamera(mCameraHelper.getCameraId());
         mFrame.showResult(null);
     }
 
@@ -58,22 +54,19 @@ public class CameraLoader {
         if(!mCameraHelper.isInit()){
             return ;
         }
-        mCameraHelper.takePicture(new Camera.PictureCallback() {
+        mCameraHelper.takePicture(new CameraInterface.CameraTakePictureCallBack() {
             @Override
-            public void onPictureTaken(byte[] data, Camera camera) {
-                try {
-                    Bitmap result = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    if(CameraLoader.this.mView != null){
-                        CameraLoader.this.mView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-                    }
-                    result = gpu.getBitmapWithFilterApplied(result);
-                    stopCamera();
-                    mFrame.showResult(result);
-                    if(takePicCallBack != null){
-                        takePicCallBack.takePic(result);
-                    }
-                } catch (Exception e) {
-                    System.gc();
+            public void readyCreateBitmap() {
+                if(CameraLoader.this.mView != null){
+                    CameraLoader.this.mView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+                }
+            }
+
+            @Override
+            public void getCameraPicture(Bitmap mBitmap) {
+                mFrame.showResult(mBitmap);
+                if(takePicCallBack != null){
+                    takePicCallBack.takePic(mBitmap);
                 }
             }
         });
@@ -85,7 +78,7 @@ public class CameraLoader {
 
     void switchCamera(int cameraId){
         if(mCameraHelper.openCamera(cameraId)){
-            showCameraPreView(cameraId);
+            showCameraPreView();
         }
     }
 
@@ -99,8 +92,8 @@ public class CameraLoader {
         mCameraHelper.release();
     }
 
-    void setFilter(@NonNull GPUImageFilter mFilter){
-        gpu.setFilter(this.mFilter = mFilter);
+    void setFilter(@NonNull CameraFilter mFilter){
+        this.mCameraHelper.setFilter(mFilter);
     }
 
     /*level <= 5*/
@@ -180,44 +173,14 @@ public class CameraLoader {
         return x;
     }
 
-    private void showCameraPreView(int cameraId){
-        Camera.CameraInfo info = new Camera.CameraInfo();
-        Camera.getCameraInfo(cameraId, info);
-
-        int degrees = getDisPlayRotation();
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-        } else { // back-facing
-            result = (info.orientation - degrees + 360) % 360;
-        }
-        gpu.setUpCamera(mCameraHelper.getCamera(), result, info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT, false);
+    private void showCameraPreView(){
+        mCameraHelper.showCameraPreView(mFrame.getActivity());
     }
 
-    private int getDisPlayRotation(){
-        int rotation = mFrame.getActivity().getWindowManager().getDefaultDisplay().getRotation();
-        int degrees = 0;
-        switch (rotation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-        return degrees;
-    }
 
     void release(){
         mCameraHelper = null;
         mFrame = null;
-        mFilter = null;
         mView = null;
     }
 
